@@ -25,6 +25,7 @@ def init():
                 hash TEXT NOT NULL
             );
         """)
+
         print("The \"source\" table was successfully created.")
         print("SafeSync is ready.")
     except Exception as e:
