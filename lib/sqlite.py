@@ -4,9 +4,9 @@ import sqlite3
 def sqlite_connect(db_file: str) -> Connection:
     return sqlite3.connect(db_file)
 
-def sqlite_execute(conn: Connection, query: str) -> None:
+def sqlite_execute(conn: Connection, query: str, params: tuple = ()) -> None:
     with conn:
-        conn.execute(query)
+        conn.execute(query, params)
 
 def sqlite_fetchone(conn: Connection, query: str, params: tuple = ()) -> tuple:
     cursor = conn.cursor()
