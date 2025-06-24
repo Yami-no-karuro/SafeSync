@@ -4,9 +4,10 @@ import sqlite3
 def sqlite_connect(db_file: str) -> Connection:
     return sqlite3.connect(db_file)
 
-def sqlite_execute(conn: Connection, query: str, params: tuple = ()) -> None:
+def sqlite_execute(conn: Connection, query: str, params: tuple = ()) -> int | None:
     with conn:
-        conn.execute(query, params)
+        cursor = conn.execute(query, params)
+        return cursor.lastrowid
 
 def sqlite_fetchone(conn: Connection, query: str, params: tuple = ()) -> tuple:
     cursor = conn.cursor()

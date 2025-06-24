@@ -4,7 +4,7 @@ from lib.sqlite import sqlite_connect
 from lib.sqlite import sqlite_fetchone
 from lib.sqlite import sqlite_execute
 
-from src.init import init
+from init import init
 
 from sqlite3 import Connection
 
