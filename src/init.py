@@ -74,22 +74,22 @@ def source_dir(dir_path: str, db_path: str):
     finally:
         conn.close()
 
-def source_file(root: str, file: str, conn: Connection):
-    filepath: str = os.path.join(root, file)
-    filepath_hash: int = fnv1a(b"{filepath}")
-    hash: int = fnv1a_file(filepath)
+def source_file(root_path: str, file_path: str, conn: Connection):
+    fullpath: str = os.path.join(root_path, file_path)
+    fullpath_hash: int = fnv1a(b"{fullpath}")
+    hash: int = fnv1a_file(fullpath)
 
     query: str = """
         SELECT * FROM sources
         WHERE filepath = ?;
     """
 
-    entry: tuple | None = sqlite_fetchone(conn, query, (filepath,))
+    entry: tuple | None = sqlite_fetchone(conn, query, (fullpath,))
     if entry is not None:
-        print(f"Skipping entry, file: \"{filepath}\" was already added to the sources index.")
+        print(f"Skipping entry, file: \"{fullpath}\" was already added to the sources index.")
         return
 
-    filepath_hash_hex: str = hex(filepath_hash)[2:]
+    fullpath_hash_hex: str = hex(fullpath_hash)[2:]
     hash_hex: str = hex(hash)[2:]
 
     query: str = """
@@ -100,5 +100,5 @@ def source_file(root: str, file: str, conn: Connection):
         ) VALUES (?, ?, ?);
     """
 
-    sqlite_execute(conn, query, (filepath, filepath_hash_hex, hash_hex))
-    print(f"File \"{filepath}\" successfully added to the sources index.")
+    sqlite_execute(conn, query, (fullpath, fullpath_hash_hex, hash_hex))
+    print(f"File \"{fullpath}\" successfully added to the sources index.")
