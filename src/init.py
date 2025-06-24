@@ -18,8 +18,12 @@ def init(destination: str):
 
 def create_root(path: str):
     root: str = f"{path}/.safesync"
-    dirs: str = os.path.join(root, 'data', 'db')
-    os.makedirs(dirs, exist_ok = True)
+    data_dir: str = os.path.join(root, 'data')
+    db_dir: str = os.path.join(data_dir, 'db')
+    objects_dir: str = os.path.join(data_dir, 'objects')
+
+    os.makedirs(db_dir, exist_ok = True)
+    os.makedirs(objects_dir, exist_ok = True)
 
 def init_db(db_path: str):
     conn: Connection = sqlite_connect(db_path)
