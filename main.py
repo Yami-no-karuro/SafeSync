@@ -43,10 +43,9 @@ def scan_dir(path: str):
                 filehash: int = fnv1a_file(filepath)
 
                 query: str = "SELECT * FROM sources WHERE source = ?"
-                entry: tuple = sqlite_fetchone(conn, query, (filepath,))
+                entry: tuple | None = sqlite_fetchone(conn, query, (filepath,))
                 if entry is not None:
-                    print(f"File: \"{filepath}\" was already sourced.")
-                    print(f"Skipping entry...")
+                    print(f"Skipping entry, file: \"{filepath}\" was already sourced.")
                     continue
 
                 filehash_hex = hex(filehash)[2:]
