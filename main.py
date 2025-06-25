@@ -1,5 +1,6 @@
 from init import init
 from status import status
+from snap import snap
 
 from sqlite3 import Connection
 
@@ -10,6 +11,7 @@ def print_help():
     print("Available commands:")
     print("safesync init <dir>")
     print("safesync status <dir>")
+    print("safesync snap <dir>")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -23,6 +25,9 @@ if __name__ == "__main__":
     elif command == "status" and len(sys.argv) == 3:
         destination: str = sys.argv[2]
         status(destination)
+    elif command == "snap" and len(sys.argv) == 3:
+        destination: str = sys.argv[2]
+        snap(destination)
     else:
         print_help()
         sys.exit(1)
