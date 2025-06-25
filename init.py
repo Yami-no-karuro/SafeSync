@@ -6,10 +6,16 @@ from src.source import source_dir
 
 from sqlite3 import Connection
 
+import sys
 import os
 
 def init(dest_path: str):
     root_path: str = os.path.join(dest_path, ".safesync")
+    if os.path.exists(root_path):
+        print("SafeSync was already initialized.")
+        print("Exiting...")
+        sys.exit(1)
+
     data_path: str = os.path.join(root_path, "data")
     objects_path: str = os.path.join(root_path, "objects")
 

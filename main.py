@@ -6,10 +6,10 @@ from sqlite3 import Connection
 import sys
 
 def print_help():
-    print(f"Usage: python3 main.py <command> [<args>]")
+    print(f"Usage: safesync <command> [<args>]")
     print("Available commands:")
-    print("python3 main.py init <dir>")
-    print("python3 main.py status <dir>")
+    print("safesync init <dir>")
+    print("safesync status <dir>")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
