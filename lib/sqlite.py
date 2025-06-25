@@ -12,11 +12,9 @@ def sqlite_execute(conn: Connection, query: str, params: tuple = ()) -> int | No
 def sqlite_fetchone(conn: Connection, query: str, params: tuple = ()) -> tuple:
     cursor = conn.cursor()
     cursor.execute(query, params)
-
     return cursor.fetchone()
 
 def sqlite_fetchall(conn: Connection, query: str, params: tuple = ()) -> list[tuple]:
     cursor = conn.cursor()
     cursor.execute(query, params)
-
     return cursor.fetchall()
