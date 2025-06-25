@@ -35,7 +35,6 @@ def source_file(conn: Connection, state: int, file_path: str):
     }
 
     add_source(conn, state, source)
-
     print(f"File: \"{file_path}\" ({file_path_hash}) successfully sourced.")
 
 def status_dir(conn: Connection, dir_path: str) -> dict:
