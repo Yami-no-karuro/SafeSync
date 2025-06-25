@@ -1,11 +1,6 @@
-from lib.libhash.bindings import fnv1a
-from lib.libhash.bindings import fnv1a_file
+from lib.sqlite import sqlite_connect
 
-from lib.sqlite import sqlite_connect, sqlite_fetchone
-
-from src.db import create_sources_table
-from src.db import create_states_table
-from src.source import source_dir, status_dir
+from src.source import status_dir
 
 from sqlite3 import Connection
 
