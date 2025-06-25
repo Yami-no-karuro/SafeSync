@@ -1,4 +1,5 @@
 from sqlite3 import Connection
+
 import sqlite3
 
 def sqlite_connect(db_file: str) -> Connection:
