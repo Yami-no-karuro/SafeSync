@@ -70,7 +70,8 @@ def status_dir(conn: Connection, dir_path: str):
             status_file(sources_dict, os.path.join(root, file))
 
     for remaining in sources_dict:
-        print(f"MODIFIED: \"{remaining['path']}\" ({remaining['path_hash']})")
+        entry: dict = sources_dict[remaining]
+        print(f"DELETED: \"{entry['path']}\" ({entry['path_hash']})")
 
     print(f"Status for directory \"{dir_path}\" completed successfully.")
 
