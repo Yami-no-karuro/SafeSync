@@ -1,10 +1,5 @@
-from lib.libhash.bindings import fnv1a_file
-
-from lib.sqlite import sqlite_connect
-from lib.sqlite import sqlite_fetchone
-from lib.sqlite import sqlite_execute
-
 from init import init
+from status import status
 
 from sqlite3 import Connection
 
@@ -14,7 +9,7 @@ def print_help():
     print(f"Usage: python3 main.py <command> [<args>]")
     print("Available commands:")
     print("python3 main.py init <dir>")
-    print("python3 main.py scan <dir>")
+    print("python3 main.py status <dir>")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
@@ -25,8 +20,9 @@ if __name__ == "__main__":
     if command == "init" and len(sys.argv) == 3:
         destination: str = sys.argv[2]
         init(destination)
-    elif command == "scan" and len(sys.argv) == 3:
-        pass
+    elif command == "status" and len(sys.argv) == 3:
+        destination: str = sys.argv[2]
+        status(destination)
     else:
         print_help()
         sys.exit(1)
