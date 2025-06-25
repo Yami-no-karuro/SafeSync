@@ -1,11 +1,10 @@
 from lib.libhash.bindings import fnv1a
 from lib.libhash.bindings import fnv1a_file
 
-from lib.sqlite import sqlite_fetchone
-from lib.sqlite import sqlite_fetchall
-
 from src.db import add_state
 from src.db import add_source
+from src.db import get_latest_state
+from src.db import get_sources_by_state
 
 from sqlite3 import Connection
 
@@ -40,37 +39,24 @@ def source_file(conn: Connection, state: int, file_path: str):
     print(f"File: \"{file_path}\" ({file_path_hash}) successfully sourced.")
 
 def status_dir(conn: Connection, dir_path: str):
-    state: int | None = sqlite_fetchone(conn, "SELECT MAX(id) FROM states;")[0]
+    state: int | None = get_latest_state(conn)
     if state is None:
         print("Unable to fetch the latest state.")
         print("Exiting...")
         sys.exit(1)
 
-    sources: list[tuple] | None = sqlite_fetchall(conn, """
-        SELECT * FROM sources
-        WHERE state = ?
-    """, (state,))
+    sources: dict | None = get_sources_by_state(conn, state)
     if sources is None:
-        print("Unable to fetch the latest state.")
+        print("Unable to fetch sources from the latest state.")
         print("Exiting...")
         sys.exit(1)
 
-    sources_dict: dict = {}
-    for source in sources:
-        sources_dict[source[3]] = {
-            "id": source[0],
-            "state": source[1],
-            "path": source[2],
-            "path_hash": source[3],
-            "content_hash": source[4]
-        }
-
     for root, _dirs, files in os.walk(dir_path):
         for file in files:
-            status_file(sources_dict, os.path.join(root, file))
+            status_file(sources, os.path.join(root, file))
 
-    for remaining in sources_dict:
-        entry: dict = sources_dict[remaining]
+    for remaining in sources:
+        entry: dict = sources[remaining]
         print(f"DELETED: \"{entry['path']}\" ({entry['path_hash']})")
 
     print(f"Status for directory \"{dir_path}\" completed successfully.")
