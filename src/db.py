@@ -27,14 +27,10 @@ def create_sources_table(conn: Connection):
 
 def add_source(conn: Connection, state: int, source: dict) -> int | None:
     try:
-        return sqlite_execute(conn, """INSERT INTO sources (
-            state,
-            path,
-            path_hash,
-            content_hash
-        ) VALUES (
-            ?, ?, ?, ?
-        );""", (
+        return sqlite_execute(conn, """INSERT INTO sources
+            (state, path, path_hash, content_hash)
+            VALUES (?, ?, ?, ?);
+        """, (
             state,
             source["path"],
             source["path_hash"],
@@ -54,7 +50,7 @@ def get_sources_by_state(conn: Connection, state: int) -> dict | None:
     """, (state,))
 
     if results is None:
-        return None
+        return results
 
     sources: dict = {}
     for source in results:
@@ -96,6 +92,6 @@ def add_state(conn: Connection) -> int | None:
 def get_latest_state(conn: Connection) -> int | None:
     result: tuple | None = sqlite_fetchone(conn, "SELECT MAX(id) FROM states;")
     if result is None:
-        return None
+        return result
 
     return result[0]
