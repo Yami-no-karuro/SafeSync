@@ -2,7 +2,8 @@ from lib.sqlite import sqlite_connect
 
 from src.db import create_sources_table
 from src.db import create_states_table
-from src.source import source_dir
+
+from src.storage import snap_directory
 
 from sqlite3 import Connection
 
@@ -28,5 +29,5 @@ def init(dest_path: str):
     create_states_table(conn)
     create_sources_table(conn)
 
-    source_dir(conn, dest_path)
+    snap_directory(conn, objects_path, dest_path)
     conn.close()

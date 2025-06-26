@@ -11,7 +11,8 @@ def create_sources_table(conn: Connection):
         sqlite_execute(conn, """
             CREATE TABLE IF NOT EXISTS sources (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                state INTEGER,
+                state INTEGER NOT NULL,
+                obj_path TEXT NOT NULL,
                 path TEXT NOT NULL,
                 path_hash TEXT NOT NULL,
                 content_hash TEXT NOT NULL,
@@ -28,10 +29,11 @@ def create_sources_table(conn: Connection):
 def add_source(conn: Connection, state: int, source: dict) -> int | None:
     try:
         return sqlite_execute(conn, """INSERT INTO sources
-            (state, path, path_hash, content_hash)
-            VALUES (?, ?, ?, ?);
+            (state, obj_path, path, path_hash, content_hash)
+            VALUES (?, ?, ?, ?, ?);
         """, (
             state,
+            source["obj_path"],
             source["path"],
             source["path_hash"],
             source["content_hash"]
@@ -44,22 +46,19 @@ def add_source(conn: Connection, state: int, source: dict) -> int | None:
         sys.exit(1)
 
 def get_sources_by_state(conn: Connection, state: int) -> dict | None:
-    results: list[tuple] | None = sqlite_fetchall(conn, """
-        SELECT * FROM sources
-        WHERE state = ?
-    """, (state,))
-
+    results: list[tuple] | None = sqlite_fetchall(conn, "SELECT * FROM sources WHERE state = ?", (state,))
     if results is None:
         return results
 
     sources: dict = {}
     for source in results:
-        sources[source[3]] = {
+        sources[source[4]] = {
             "id": source[0],
             "state": source[1],
-            "path": source[2],
-            "path_hash": source[3],
-            "content_hash": source[4]
+            "obj_path": source[2],
+            "path": source[3],
+            "path_hash": source[4],
+            "content_hash": source[5]
         }
 
     return sources
@@ -90,8 +89,8 @@ def add_state(conn: Connection) -> int | None:
         sys.exit(1)
 
 def get_latest_state(conn: Connection) -> int | None:
-    result: tuple | None = sqlite_fetchone(conn, "SELECT MAX(id) FROM states;")
+    result: tuple | None = sqlite_fetchone(conn, "SELECT MAX(id) FROM states;")[0]
     if result is None:
-        return result
+        return sqlite_execute(conn, "INSERT INTO states DEFAULT VALUES;")
 
-    return result[0]
+    return result

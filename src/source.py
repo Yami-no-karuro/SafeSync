@@ -46,9 +46,7 @@ def status_dir(conn: Connection, dir_path: str) -> dict:
 
     sources: dict | None = get_sources_by_state(conn, state)
     if sources is None:
-        print("Unable to fetch sources from the latest state.")
-        print("Exiting...")
-        sys.exit(1)
+        sources = {}
 
     new: list = []
     modified: list = []
@@ -63,7 +61,6 @@ def status_dir(conn: Connection, dir_path: str) -> dict:
         deleted.append((entry["path"], [entry["path_hash"]]))
         print(f"DELETED: \"{entry['path']}\" ({entry['path_hash']})")
 
-    print(f"Status for directory \"{dir_path}\" completed successfully.")
     return {
         "new": new,
         "modified": modified,
