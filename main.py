@@ -2,8 +2,6 @@ from init import init
 from snap import snap
 from status import status
 
-from sqlite3 import Connection
-
 import sys
 
 def print_help():
