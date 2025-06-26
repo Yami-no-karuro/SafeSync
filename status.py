@@ -35,4 +35,7 @@ def status(dest_path: str):
     for source in deleted:
         print(f"DELETED: \"{source[0]}\" ({source[1]})")
 
+    if not new and not modified and not deleted:
+        print("No changes detected.")
+
     conn.close()
