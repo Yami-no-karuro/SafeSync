@@ -46,7 +46,7 @@ def add_source(conn: Connection, state: int, source: dict) -> int | None:
         sys.exit(1)
 
 def get_sources_by_state(conn: Connection, state: int) -> dict | None:
-    results: list[tuple] | None = sqlite_fetchall(conn, "SELECT * FROM sources WHERE state = ?", (state,))
+    results: list[tuple] | None = sqlite_fetchall(conn, "SELECT * FROM sources WHERE state = ?;", (state,))
     if results is None:
         return results
 

@@ -51,15 +51,18 @@ def add_object(storage_path: str, state: int, file_path: str, file_path_hash: st
     return obj_path
 
 def snap_directory(conn: Connection, storage_path: str, target_path: str, status_only: bool = False) -> dict:
+    lts_state: int = fetch_latest_state(conn)
+    lts_sources: dict = fetch_latest_sources(conn, lts_state)
+
     status: dict = {
         "new": [],
         "modified": [],
         "deleted": []
     }
 
-    lts_state: int = fetch_latest_state(conn)
-    lts_sources: dict = fetch_latest_sources(conn, lts_state)
-    crn_state: int = fetch_new_state(conn, lts_state, lts_sources)
+    crn_state: int = lts_state
+    if status_only is False:
+        crn_state: int = fetch_new_state(conn, lts_state, lts_sources)
 
     for root, _dirs, files in os.walk(target_path):
         if ".safesync" in root.split(os.sep):
@@ -86,11 +89,11 @@ def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, fi
             status["modified"].append((file_path, file_path_hash))
             if status_only is False:
                 obj_path = add_object(storage_path, state, file_path, file_path_hash)
-
-            del sources[file_path_hash]
         else:
             if status_only is False:
                 obj_path = source["obj_path"]
+
+        del sources[file_path_hash]
     else:
         status["new"].append((file_path, file_path_hash))
         if status_only is False:
