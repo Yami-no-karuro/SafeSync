@@ -1,5 +1,6 @@
 from init import init
 from snap import snap
+from status import status
 
 from sqlite3 import Connection
 
@@ -20,6 +21,9 @@ if __name__ == "__main__":
     if command == "init" and len(sys.argv) == 3:
         destination: str = sys.argv[2]
         init(destination)
+    elif command == "status" and len(sys.argv) == 3:
+        destination: str = sys.argv[2]
+        status(destination)
     elif command == "snap" and len(sys.argv) == 3:
         destination: str = sys.argv[2]
         snap(destination)

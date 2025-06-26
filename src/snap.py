@@ -50,7 +50,7 @@ def add_object(storage_path: str, state: int, file_path: str, file_path_hash: st
 
     return obj_path
 
-def snap_directory(conn: Connection, storage_path: str, target_path: str) -> dict:
+def snap_directory(conn: Connection, storage_path: str, target_path: str, status_only: bool = False) -> dict:
     status: dict = {
         "new": [],
         "modified": [],
@@ -67,7 +67,7 @@ def snap_directory(conn: Connection, storage_path: str, target_path: str) -> dic
 
         for file in files:
             path: str = os.path.join(root, file)
-            snap_file(conn, storage_path, crn_state, lts_sources, path, status)
+            snap_file(conn, storage_path, crn_state, lts_sources, path, status, status_only)
 
     for key in lts_sources:
         entry: dict = lts_sources[key]
@@ -75,7 +75,7 @@ def snap_directory(conn: Connection, storage_path: str, target_path: str) -> dic
 
     return status
 
-def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, file_path: str, status: dict):
+def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, file_path: str, status: dict, status_only: bool = False):
     file_path_hash: str = hex(fnv1a(file_path.encode()))[2:]
     content_hash: str = hex(fnv1a_file(file_path))[2:]
 
@@ -83,18 +83,23 @@ def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, fi
     if file_path_hash in sources:
         source: dict = sources[file_path_hash]
         if source["content_hash"] != content_hash:
-            obj_path = add_object(storage_path, state, file_path, file_path_hash)
             status["modified"].append((file_path, file_path_hash))
+            if status_only is False:
+                obj_path = add_object(storage_path, state, file_path, file_path_hash)
+
             del sources[file_path_hash]
         else:
-            obj_path = source["obj_path"]
+            if status_only is False:
+                obj_path = source["obj_path"]
     else:
-        obj_path = add_object(storage_path, state, file_path, file_path_hash)
         status["new"].append((file_path, file_path_hash))
+        if status_only is False:
+            obj_path = add_object(storage_path, state, file_path, file_path_hash)
 
-    add_source(conn, state, {
-        "obj_path": obj_path,
-        "path": file_path,
-        "path_hash": file_path_hash,
-        "content_hash": content_hash
-    })
+    if status_only is False:
+        add_source(conn, state, {
+            "obj_path": obj_path,
+            "path": file_path,
+            "path_hash": file_path_hash,
+            "content_hash": content_hash
+        })
