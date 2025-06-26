@@ -89,7 +89,7 @@ def add_state(conn: Connection) -> int | None:
         sys.exit(1)
 
 def get_latest_state(conn: Connection) -> int | None:
-    result: tuple | None = sqlite_fetchone(conn, "SELECT MAX(id) FROM states;")[0]
+    result: int | None = sqlite_fetchone(conn, "SELECT MAX(id) FROM states;")[0]
     if result is None:
         return sqlite_execute(conn, "INSERT INTO states DEFAULT VALUES;")
 

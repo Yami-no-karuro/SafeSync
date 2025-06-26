@@ -2,8 +2,7 @@ from lib.sqlite import sqlite_connect
 
 from src.db import create_sources_table
 from src.db import create_states_table
-
-from src.storage import snap_directory
+from src.snap import snap_directory
 
 from sqlite3 import Connection
 
