@@ -10,6 +10,7 @@ def print_help():
     print(f"Usage: safesync <command> [<args>]")
     print("Available commands:")
     print("safesync init <dir>")
+    print("safesync status <dir>")
     print("safesync snap <dir>")
 
 if __name__ == "__main__":
