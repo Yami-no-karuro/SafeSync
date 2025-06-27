@@ -10,7 +10,6 @@ from src.db import get_sources_by_state
 
 from sqlite3 import Connection
 
-import shutil
 import sys
 import os
 
