@@ -1,6 +1,8 @@
 from lib.libhash.bindings import fnv1a
 from lib.libhash.bindings import fnv1a_file
 
+from lib.libcompress.bindings import compress
+
 from src.db import add_state
 from src.db import add_source
 from src.db import get_latest_state
@@ -46,7 +48,7 @@ def add_object(storage_path: str, state: int, file_path: str, file_path_hash: st
     obj_path: str = os.path.join(obj_dir_path, file_path_hash)
 
     os.makedirs(obj_dir_path, exist_ok = True)
-    shutil.copy(file_path, obj_path)
+    compress(file_path, obj_path)
 
     return obj_path
 
