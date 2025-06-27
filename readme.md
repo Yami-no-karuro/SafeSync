@@ -9,5 +9,5 @@ It keeps track internally of the version of every file and at each snapshot take
 
 - Clone the [SafeSync](https://github.com/Yami-no-karuro/SafeSync.git) project (`git clone https://github.com/Yami-no-karuro/SafeSync.git`).
 - Change directory into the project (`cd SafeSync`).
-- Make the **safesync** file executable (`chmod +x ./safesync`).
-- Enjoy (`./safesync`).
+- Run the installation script (`bash install.sh`).
+- Verify that everything works by running `safesync`.

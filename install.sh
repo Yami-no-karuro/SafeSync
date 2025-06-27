@@ -6,6 +6,8 @@ if [ ! -f "$EXECUTABLE" ]; then
     exit 1
 fi
 
+chmod +x "$EXECUTABLE"
+
 EXECUTABLE_DIR="$(cd "$(dirname "$EXECUTABLE")" && pwd)"
 if ! grep -Fxq "export PATH=\"\$PATH:$EXECUTABLE_DIR\"" ~/.bashrc; then
     echo "Adding executable path (\"$EXECUTABLE_DIR\") to ~/.bashrc..."
