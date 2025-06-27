@@ -7,7 +7,7 @@ It keeps track internally of the version of every file and at each snapshot take
 
 ### Installation (*nix)
 
-- Clone the [SafeSync](https://github.com/Yami-no-karuro/SafeSync.git) project (`git clone https://github.com/Yami-no-karuro/SafeSync.git`).
-- Change directory into the project (`cd SafeSync`).
-- Run the installation script (`bash install.sh`).
-- Verify that everything works by running `safesync`.
+- `git clone https://github.com/Yami-no-karuro/SafeSync.git`
+- `cd SafeSync`
+- `chmod +x safesync`
+- `./safesync`
