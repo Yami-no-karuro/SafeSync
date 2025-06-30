@@ -23,7 +23,6 @@ def create_sources_table(conn: Connection):
         conn.close()
 
         print(f"An unexpected error occurred: \"{e}\"")
-        print("Exiting...")
         sys.exit(1)
 
 def spawn_source(conn: Connection, state: int, source: dict) -> int | None:
@@ -42,7 +41,6 @@ def spawn_source(conn: Connection, state: int, source: dict) -> int | None:
         conn.close()
 
         print(f"An unexpected error occurred: \"{e}\"")
-        print("Exiting...")
         sys.exit(1)
 
 def fetch_sources_by_state(conn: Connection, state: int) -> dict | None:
@@ -75,7 +73,6 @@ def create_states_table(conn: Connection):
         conn.close()
 
         print(f"An unexpected error occurred: \"{e}\"")
-        print("Exiting...")
         sys.exit(1)
 
 def spawn_state(conn: Connection) -> int | None:
@@ -85,7 +82,6 @@ def spawn_state(conn: Connection) -> int | None:
         conn.close()
 
         print(f"An unexpected error occurred: \"{e}\"")
-        print("Exiting...")
         sys.exit(1)
 
 def fetch_latest_state(conn: Connection) -> int | None:

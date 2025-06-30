@@ -22,7 +22,6 @@ def add_source(conn: Connection, state: int, source: dict) -> dict:
 
     if id is None:
         print("Unable to create a new source in the current state.")
-        print("Exiting...")
         sys.exit(1)
         
     source["id"] = id

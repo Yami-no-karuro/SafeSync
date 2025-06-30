@@ -14,7 +14,6 @@ from sqlite3 import Connection
 import os
 
 def load_ignores(ignore_path: str) -> list[str]:
-    print(ignore_path)
     if not os.path.exists(ignore_path):
         return []
 
@@ -49,11 +48,16 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
     
     ignores.append(".safesync");
     for root, _dirs, files in os.walk(target_path):
+        ignored: bool = False
+        
         crnt: list = root.split(os.sep)
         for ignr in ignores:
             if ignr in crnt:
-                continue
+                ignored = True
 
+        if ignored:
+            continue
+            
         for file in files:
             status["scanned"] += 1
             path: str = os.path.join(root, file)

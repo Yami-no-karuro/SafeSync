@@ -12,7 +12,6 @@ def status(dest_path: str):
     root_path: str = os.path.join(dest_path, ".safesync")
     if not os.path.exists(root_path):
         print("Not a SafeSync repository.")
-        print("Exiting...")
         sys.exit(1)
 
     data_path: str = os.path.join(root_path, "data")

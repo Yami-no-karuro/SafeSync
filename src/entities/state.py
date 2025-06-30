@@ -9,7 +9,6 @@ def get_latest_state(conn: Connection) -> int:
     state: int | None = fetch_latest_state(conn)
     if state is None:
         print("Unable to fetch the latest state.")
-        print("Exiting...")
         sys.exit(1)
 
     return state
@@ -22,7 +21,6 @@ def add_state(conn: Connection, lts_state: int, lts_sources: dict) -> int:
         state = spawn_state(conn)
         if state is None:
             print("Unable to create a new state.")
-            print("Exiting...")
             sys.exit(1)
 
     return state
