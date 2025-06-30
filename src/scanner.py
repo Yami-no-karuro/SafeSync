@@ -53,6 +53,7 @@ def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, fi
     obj_path: str | None = None
     if file_path_hash in sources:
         source: dict = sources[file_path_hash]
+        
         if source["content_hash"] != content_hash:
             status["modified"].append((file_path, file_path_hash))
             if o_status is False:
