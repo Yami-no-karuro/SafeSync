@@ -1,6 +1,6 @@
-from init import init
-from snap import snap
-from status import status
+from src.commands.init import init
+from src.commands.snap import snap
+from src.commands.status import status
 
 import sys
 
