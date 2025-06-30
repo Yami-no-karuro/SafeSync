@@ -29,5 +29,20 @@ def init(dest_path: str):
     create_states_table(conn)
     create_sources_table(conn)
 
-    scan_directory(conn, objects_path, dest_path)
+    status: dict = scan_directory(conn, objects_path, dest_path)
+    
+    new: list = status["new"]
+    modified: list = status["modified"]
+    deleted: list = status["deleted"]
+    
+    if not new and not modified and not deleted:
+        print("No changes detected.")
+        conn.close()
+        return
+        
+    print("===") 
+    print(f"New objects: {len(status['new'])}")
+    print(f"Modified objects: {len(status['modified'])}")
+    print(f"Deleted objects: {len(status['deleted'])}")
+    
     conn.close()
