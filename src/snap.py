@@ -1,59 +1,21 @@
 from lib.libhash.bindings import fnv1a
 from lib.libhash.bindings import fnv1a_file
 
-from lib.libcompress.bindings import compress
+from src.state import get_latest_state
+from src.state import add_state
 
-from src.db import add_state
-from src.db import add_source
-from src.db import get_latest_state
-from src.db import get_sources_by_state
+from src.sources import get_latest_sources
+from src.sources import add_source
+
+from src.objects import create_source_object
 
 from sqlite3 import Connection
 
-import sys
 import os
 
-def fetch_latest_state(conn: Connection) -> int:
-    state: int | None = get_latest_state(conn)
-    if state is None:
-        print("Unable to fetch the latest state.")
-        print("Exiting...")
-        sys.exit(1)
-
-    return state
-
-def fetch_new_state(conn: Connection, lts_state: int, lts_sources: dict) -> int:
-    state: int | None = None
-    if lts_state == 1 and not lts_sources:
-        state = lts_state
-    else:
-        state = add_state(conn)
-        if state is None:
-            print("Unable to create a new state.")
-            print("Exiting...")
-            sys.exit(1)
-
-    return state
-
-def fetch_latest_sources(conn: Connection, state: int) -> dict:
-    sources: dict | None = get_sources_by_state(conn, state)
-    if sources is None:
-        sources = {}
-
-    return sources
-
-def add_object(storage_path: str, state: int, file_path: str, file_path_hash: str) -> str:
-    obj_dir_path: str = os.path.join(storage_path, f"{state}")
-    obj_path: str = os.path.join(obj_dir_path, file_path_hash)
-
-    os.makedirs(obj_dir_path, exist_ok = True)
-    compress(file_path, obj_path)
-
-    return obj_path
-
 def snap_directory(conn: Connection, storage_path: str, target_path: str, status_only: bool = False) -> dict:
-    lts_state: int = fetch_latest_state(conn)
-    lts_sources: dict = fetch_latest_sources(conn, lts_state)
+    lts_state: int = get_latest_state(conn)
+    lts_sources: dict = get_latest_sources(conn, lts_state)
 
     status: dict = {
         "new": [],
@@ -63,7 +25,7 @@ def snap_directory(conn: Connection, storage_path: str, target_path: str, status
 
     crn_state: int = lts_state
     if status_only is False:
-        crn_state: int = fetch_new_state(conn, lts_state, lts_sources)
+        crn_state: int = add_state(conn, lts_state, lts_sources)
 
     for root, _dirs, files in os.walk(target_path):
         if ".safesync" in root.split(os.sep):
@@ -89,7 +51,7 @@ def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, fi
         if source["content_hash"] != content_hash:
             status["modified"].append((file_path, file_path_hash))
             if status_only is False:
-                obj_path = add_object(storage_path, state, file_path, file_path_hash)
+                obj_path = create_source_object(storage_path, state, file_path, file_path_hash)
                 print(f"Object \"{obj_path}\" successfully added.")
         else:
             if status_only is False:
@@ -99,7 +61,7 @@ def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, fi
     else:
         status["new"].append((file_path, file_path_hash))
         if status_only is False:
-            obj_path = add_object(storage_path, state, file_path, file_path_hash)
+            obj_path = create_source_object(storage_path, state, file_path, file_path_hash)
             print(f"Object \"{obj_path}\" successfully added.")
 
     if status_only is False:

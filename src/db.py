@@ -26,7 +26,7 @@ def create_sources_table(conn: Connection):
         print("Exiting...")
         sys.exit(1)
 
-def add_source(conn: Connection, state: int, source: dict) -> int | None:
+def spawn_source(conn: Connection, state: int, source: dict) -> int | None:
     try:
         return sqlite_execute(conn, """INSERT INTO sources
             (state, obj_path, path, path_hash, content_hash)
@@ -45,7 +45,7 @@ def add_source(conn: Connection, state: int, source: dict) -> int | None:
         print("Exiting...")
         sys.exit(1)
 
-def get_sources_by_state(conn: Connection, state: int) -> dict | None:
+def fetch_sources_by_state(conn: Connection, state: int) -> dict | None:
     results: list[tuple] | None = sqlite_fetchall(conn, "SELECT * FROM sources WHERE state = ?;", (state,))
     if results is None:
         return results
@@ -78,7 +78,7 @@ def create_states_table(conn: Connection):
         print("Exiting...")
         sys.exit(1)
 
-def add_state(conn: Connection) -> int | None:
+def spawn_state(conn: Connection) -> int | None:
     try:
         return sqlite_execute(conn, "INSERT INTO states DEFAULT VALUES;")
     except Exception as e:
@@ -88,7 +88,7 @@ def add_state(conn: Connection) -> int | None:
         print("Exiting...")
         sys.exit(1)
 
-def get_latest_state(conn: Connection) -> int | None:
+def fetch_latest_state(conn: Connection) -> int | None:
     result: int | None = sqlite_fetchone(conn, "SELECT MAX(id) FROM states;")[0]
     if result is None:
         return sqlite_execute(conn, "INSERT INTO states DEFAULT VALUES;")
