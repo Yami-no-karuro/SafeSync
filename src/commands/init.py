@@ -2,6 +2,7 @@ from lib.sqlite import sqlite_connect
 
 from src.utils.db import create_sources_table
 from src.utils.db import create_states_table
+from src.utils.db import spawn_state
 
 from src.scanner import load_ignores
 from src.scanner import scan_directory
@@ -29,6 +30,7 @@ def init(dest_path: str):
 
     create_states_table(conn)
     create_sources_table(conn)
+    spawn_state(conn)
 
     ignores: list = load_ignores(ignore_path)
     status: dict = scan_directory(conn, objects_path, dest_path, ignores)
