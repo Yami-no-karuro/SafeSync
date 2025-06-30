@@ -6,11 +6,18 @@ import sys
 import os
 
 def print_help():
+    print("███████╗ █████╗ ███████╗███████╗███████╗██╗   ██╗███╗   ██╗ ██████╗")
+    print("██╔════╝██╔══██╗██╔════╝██╔════╝██╔════╝╚██╗ ██╔╝████╗  ██║██╔════╝")
+    print("███████╗███████║█████╗  █████╗  ███████╗ ╚████╔╝ ██╔██╗ ██║██║     ")
+    print("╚════██║██╔══██║██╔══╝  ██╔══╝  ╚════██║  ╚██╔╝  ██║╚██╗██║██║     ")
+    print("███████║██║  ██║██║     ███████╗███████║   ██║   ██║ ╚████║╚██████╗")
+    print("╚══════╝╚═╝  ╚═╝╚═╝     ╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═══╝ ╚═════╝")
     print(f"Usage: safesync <command> [<args>]")
+    print("===")
     print("Available commands:")
-    print("safesync init <dir>")
-    print("safesync status <dir>")
-    print("safesync snap <dir>")
+    print("safesync init")
+    print("safesync status")
+    print("safesync snap")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
