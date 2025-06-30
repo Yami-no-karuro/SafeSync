@@ -2,22 +2,10 @@ from src.commands.init import init
 from src.commands.snap import snap
 from src.commands.status import status
 
+from src.utils.cli import print_help
+
 import sys
 import os
-
-def print_help():
-    print("███████╗ █████╗ ███████╗███████╗███████╗██╗   ██╗███╗   ██╗ ██████╗")
-    print("██╔════╝██╔══██╗██╔════╝██╔════╝██╔════╝╚██╗ ██╔╝████╗  ██║██╔════╝")
-    print("███████╗███████║█████╗  █████╗  ███████╗ ╚████╔╝ ██╔██╗ ██║██║     ")
-    print("╚════██║██╔══██║██╔══╝  ██╔══╝  ╚════██║  ╚██╔╝  ██║╚██╗██║██║     ")
-    print("███████║██║  ██║██║     ███████╗███████║   ██║   ██║ ╚████║╚██████╗")
-    print("╚══════╝╚═╝  ╚═╝╚═╝     ╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═══╝ ╚═════╝")
-    print(f"Usage: safesync <command> [<args>]")
-    print("===")
-    print("Available commands:")
-    print("safesync init")
-    print("safesync status")
-    print("safesync snap")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
