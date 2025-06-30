@@ -13,33 +13,17 @@ The program keep track of the version of every file internally and at each snaps
 
 ### Installation
 
-1. Clone the repository:
+1. Clone the repository: `git clone https://github.com/Yami-no-karuro/SafeSync.git`
+2. Change into the project directory: `cd SafeSync`
+3. Make the safesync script executable: `chmod +x safesync`
+4. Add the project directory to your PATH environment variable: `export PATH="$PATH:$(pwd)"`  
+5. Run the program: `safesync`
 
-```bash
-git clone https://github.com/Yami-no-karuro/SafeSync.git
-```
+### Ignore options
 
-2. Change into the project directory:
+**SafeSync** supports an ignore file named `.syncignore` to specify files or directories that should be excluded from synchronization.  
+This is useful to avoid backing up temporary files, logs, build artifacts, or any other files you don't want to track.
 
-```bash
-cd SafeSync
-```
-
-3. Make the safesync script executable:
-
-```bash
-chmod +x safesync
-```
-
-4. Add the project directory to your PATH environment variable:
-
-```bash
-export PATH="$PATH:$(pwd)"
-# Note: To make this change permanent, add the above line above to your shell profile file (e.g., ~/.bashrc, ~/.zshrc).
-```
-
-5. Run SafeSync:
-
-```bash
-safesync
-```
+- Create a file named `.syncignore` in the root directory of the project.
+- List the patterns or file/directory names to exclude, one per line.  
+(Lines starting with `#` are treated as comments, blank lines are ignored)
