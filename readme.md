@@ -24,6 +24,6 @@ The program keep track of the version of every file internally and at each snaps
 **SafeSync** supports an ignore file named `.syncignore` to specify files or directories that should be excluded from synchronization.  
 This is useful to avoid backing up temporary files, logs, build artifacts, or any other files you don't want to track.
 
-- Create a file named `.syncignore` in the root directory of the project.
-- List the patterns or file/directory names to exclude, one per line.  
+1. Create a file named `.syncignore` in the root directory of the project.
+2. List the patterns or file/directory names to exclude, one per line.  
 (Lines starting with `#` are treated as comments, blank lines are ignored)
