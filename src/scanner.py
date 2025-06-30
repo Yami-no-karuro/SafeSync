@@ -45,8 +45,8 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
         crn_state: int = add_state(conn, lts_state, lts_sources)
         
     status["state"] = crn_state
-    
     ignores.append(".safesync");
+    
     for root, _dirs, files in os.walk(target_path):
         ignored: bool = False
         crnt: list = root.split(os.sep)
