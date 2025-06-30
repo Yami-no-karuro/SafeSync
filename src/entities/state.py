@@ -5,8 +5,8 @@ from sqlite3 import Connection
 
 import sys
 
-def get_latest_state(conn: Connection) -> int:
-    state: int | None = fetch_latest_state(conn)
+def get_latest_state(conn: Connection) -> dict:
+    state: dict | None = fetch_latest_state(conn)
     if state is None:
         print("Unable to fetch the latest state.")
         sys.exit(1)

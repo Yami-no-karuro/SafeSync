@@ -29,24 +29,26 @@ def load_ignores(ignore_path: str) -> list[str]:
     return patterns
 
 def scan_directory(conn: Connection, storage_path: str, target_path: str, ignores: list, o_status: bool = False) -> dict:
-    lts_state: int = get_latest_state(conn)
-    lts_sources: dict = get_latest_sources(conn, lts_state)
+    lts_state: dict = get_latest_state(conn)
+    lts_sources: dict = get_latest_sources(conn, lts_state["id"])
 
     status: dict = {
-        "state": None,
+        "state_id": None,
+        "state_time": None,
         "scanned": 0,
         "new": [],
         "modified": [],
         "deleted": []
     }
 
-    crn_state: int = lts_state
+    crn_state: int = lts_state["id"]
     if o_status is False:
-        crn_state: int = add_state(conn, lts_state, lts_sources)
+        crn_state: int = add_state(conn, lts_state["id"], lts_sources)
         
-    status["state"] = crn_state
-    ignores.append(".safesync");
+    status["state_id"] = crn_state
+    status["state_time"] = lts_state["time"]
     
+    ignores.append(".safesync");
     for root, _dirs, files in os.walk(target_path):
         ignored: bool = False
         crnt: list = root.split(os.sep)

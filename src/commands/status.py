@@ -24,7 +24,7 @@ def status(dest_path: str):
     ignores: list = load_ignores(ignore_path)
     status: dict = scan_directory(conn, objects_path, dest_path, ignores, True)
     
-    print(f"State: {status['state']}")
+    print(f"State: {status['state_id']} ({status['state_time']})")
     print(f"Scanned objects: {status['scanned']}")
     print("===")
 
