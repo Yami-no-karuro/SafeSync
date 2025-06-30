@@ -18,6 +18,8 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, o_stat
     lts_sources: dict = get_latest_sources(conn, lts_state)
 
     status: dict = {
+        "state": None,
+        "scanned": 0,
         "new": [],
         "modified": [],
         "deleted": []
@@ -26,12 +28,15 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, o_stat
     crn_state: int = lts_state
     if o_status is False:
         crn_state: int = add_state(conn, lts_state, lts_sources)
+        
+    status["state"] = crn_state
 
     for root, _dirs, files in os.walk(target_path):
         if ".safesync" in root.split(os.sep):
             continue
 
         for file in files:
+            status["scanned"] += 1
             path: str = os.path.join(root, file)
             snap_file(conn, storage_path, crn_state, lts_sources, path, status, o_status)
 

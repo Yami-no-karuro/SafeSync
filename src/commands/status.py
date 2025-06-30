@@ -21,6 +21,10 @@ def status(dest_path: str):
     conn: Connection = sqlite_connect(db_path)
 
     status = scan_directory(conn, objects_path, dest_path, True)
+    
+    print(f"State: {status['state']}")
+    print(f"Scanned objects: {status['scanned']}")
+    print("===") 
 
     new: list = status["new"]
     for source in new:
@@ -36,5 +40,10 @@ def status(dest_path: str):
 
     if not new and not modified and not deleted:
         print("No changes detected.")
+       
+    print("===") 
+    print(f"New objects: {len(status['new'])}")
+    print(f"Modified objects: {len(status['modified'])}")
+    print(f"Deleted objects: {len(status['deleted'])}")
 
     conn.close()

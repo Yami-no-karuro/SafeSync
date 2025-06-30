@@ -15,8 +15,8 @@ def get_latest_sources(conn: Connection, state: int) -> dict:
 def add_source(conn: Connection, state: int, source: dict) -> dict:
     id: int | None = spawn_source(conn, state, {
         "obj_path": source["obj_path"],
-        "path": source["file_path"],
-        "path_hash": source["file_path_hash"],
+        "path": source["path"],
+        "path_hash": source["path_hash"],
         "content_hash": source["content_hash"]
     })
 
