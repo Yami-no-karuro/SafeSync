@@ -1,7 +1,6 @@
-
 from lib.sqlite import sqlite_connect
 
-from src.snap import snap_directory
+from src.scanner import scan_directory
 
 from sqlite3 import Connection
 
@@ -21,7 +20,7 @@ def status(dest_path: str):
     db_path: str = os.path.join(data_path, "safesync-core.db")
     conn: Connection = sqlite_connect(db_path)
 
-    status = snap_directory(conn, objects_path, dest_path, True)
+    status = scan_directory(conn, objects_path, dest_path, True)
 
     new: list = status["new"]
     for source in new:

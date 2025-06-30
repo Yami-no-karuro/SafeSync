@@ -1,5 +1,5 @@
-from src.db import fetch_latest_state
-from src.db import spawn_state
+from src.utils.db import fetch_latest_state
+from src.utils.db import spawn_state
 
 from sqlite3 import Connection
 

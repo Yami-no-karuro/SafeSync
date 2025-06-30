@@ -1,5 +1,5 @@
-from src.db import fetch_sources_by_state
-from src.db import spawn_source
+from src.utils.db import fetch_sources_by_state
+from src.utils.db import spawn_source
 
 from sqlite3 import Connection
 

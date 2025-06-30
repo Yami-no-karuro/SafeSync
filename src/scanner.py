@@ -1,19 +1,19 @@
 from lib.libhash.bindings import fnv1a
 from lib.libhash.bindings import fnv1a_file
 
-from src.state import get_latest_state
-from src.state import add_state
+from src.entities.state import get_latest_state
+from src.entities.state import add_state
 
-from src.sources import get_latest_sources
-from src.sources import add_source
+from src.entities.sources import get_latest_sources
+from src.entities.sources import add_source
 
-from src.objects import create_source_object
+from src.entities.objects import create_source_object
 
 from sqlite3 import Connection
 
 import os
 
-def snap_directory(conn: Connection, storage_path: str, target_path: str, status_only: bool = False) -> dict:
+def scan_directory(conn: Connection, storage_path: str, target_path: str, o_status: bool = False) -> dict:
     lts_state: int = get_latest_state(conn)
     lts_sources: dict = get_latest_sources(conn, lts_state)
 
@@ -24,7 +24,7 @@ def snap_directory(conn: Connection, storage_path: str, target_path: str, status
     }
 
     crn_state: int = lts_state
-    if status_only is False:
+    if o_status is False:
         crn_state: int = add_state(conn, lts_state, lts_sources)
 
     for root, _dirs, files in os.walk(target_path):
@@ -33,7 +33,7 @@ def snap_directory(conn: Connection, storage_path: str, target_path: str, status
 
         for file in files:
             path: str = os.path.join(root, file)
-            snap_file(conn, storage_path, crn_state, lts_sources, path, status, status_only)
+            snap_file(conn, storage_path, crn_state, lts_sources, path, status, o_status)
 
     for key in lts_sources:
         entry: dict = lts_sources[key]
@@ -41,7 +41,7 @@ def snap_directory(conn: Connection, storage_path: str, target_path: str, status
 
     return status
 
-def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, file_path: str, status: dict, status_only: bool = False):
+def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, file_path: str, status: dict, o_status: bool = False):
     file_path_hash: str = hex(fnv1a(file_path.encode()))[2:]
     content_hash: str = hex(fnv1a_file(file_path))[2:]
 
@@ -50,21 +50,21 @@ def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, fi
         source: dict = sources[file_path_hash]
         if source["content_hash"] != content_hash:
             status["modified"].append((file_path, file_path_hash))
-            if status_only is False:
+            if o_status is False:
                 obj_path = create_source_object(storage_path, state, file_path, file_path_hash)
                 print(f"Object \"{obj_path}\" successfully added.")
         else:
-            if status_only is False:
+            if o_status is False:
                 obj_path = source["obj_path"]
 
         del sources[file_path_hash]
     else:
         status["new"].append((file_path, file_path_hash))
-        if status_only is False:
+        if o_status is False:
             obj_path = create_source_object(storage_path, state, file_path, file_path_hash)
             print(f"Object \"{obj_path}\" successfully added.")
 
-    if status_only is False:
+    if o_status is False:
         add_source(conn, state, {
             "obj_path": obj_path,
             "path": file_path,

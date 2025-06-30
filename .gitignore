@@ -6,8 +6,7 @@ lib/libcompress/__pycache__
 
 src/__pycache__
 src/commands/__pycache__
-
-playground/*
-!playground/.gitkeep
+src/entities/__pycache__
+src/utils/__pycache__
 
 .safesync
