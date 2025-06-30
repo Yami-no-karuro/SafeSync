@@ -14,7 +14,7 @@ typedef struct MinHeap {
     MinHNode **array;
 } MinHeap;
 
-void compress(const char *input_file, const char *output_file);
-void decompress(const char *input_file, const char *output_file);
+void huf_compress(const char *input_file, const char *output_file);
+void huf_decompress(const char *input_file, const char *output_file);
 
 #endif

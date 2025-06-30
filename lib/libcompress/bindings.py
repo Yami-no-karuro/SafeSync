@@ -7,15 +7,15 @@ lib = ctypes.CDLL(libpath)
 # ====
 # Compress binding
 # ====
-lib.compress.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
-lib.compress.restype = None
-def compress(input_file: str, output_file: str) -> None:
-    lib.compress(input_file.encode('utf-8'), output_file.encode('utf-8'))
+lib.huf_compress.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
+lib.huf_compress.restype = None
+def huf_compress(input_file: str, output_file: str) -> None:
+    lib.huf_compress(input_file.encode('utf-8'), output_file.encode('utf-8'))
 
 # ====
 # Compress binding
 # ====
-lib.decompress.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
-lib.decompress.restype = None
-def decompress(input_file: str, output_file: str) -> None:
-    lib.decompress(input_file.encode('utf-8'), output_file.encode('utf-8'))
+lib.huf_decompress.argtypes = [ctypes.c_char_p, ctypes.c_char_p]
+lib.huf_decompress.restype = None
+def huf_decompress(input_file: str, output_file: str) -> None:
+    lib.huf_decompress(input_file.encode('utf-8'), output_file.encode('utf-8'))
