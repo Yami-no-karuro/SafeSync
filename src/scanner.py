@@ -13,7 +13,23 @@ from sqlite3 import Connection
 
 import os
 
-def scan_directory(conn: Connection, storage_path: str, target_path: str, o_status: bool = False) -> dict:
+def load_ignores(ignore_path: str) -> list[str]:
+    print(ignore_path)
+    if not os.path.exists(ignore_path):
+        return []
+
+    patterns: list[str] = []
+    with open(ignore_path, "r") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+
+            patterns.append(line)
+
+    return patterns
+
+def scan_directory(conn: Connection, storage_path: str, target_path: str, ignores: list, o_status: bool = False) -> dict:
     lts_state: int = get_latest_state(conn)
     lts_sources: dict = get_latest_sources(conn, lts_state)
 
@@ -30,10 +46,13 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, o_stat
         crn_state: int = add_state(conn, lts_state, lts_sources)
         
     status["state"] = crn_state
-
+    
+    ignores.append(".safesync");
     for root, _dirs, files in os.walk(target_path):
-        if ".safesync" in root.split(os.sep):
-            continue
+        crnt: list = root.split(os.sep)
+        for ignr in ignores:
+            if ignr in crnt:
+                continue
 
         for file in files:
             status["scanned"] += 1
