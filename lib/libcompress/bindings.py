@@ -1,8 +1,9 @@
 import ctypes
 import os
 
-libpath: str = os.path.abspath("lib/libcompress/build/libcompress.so")
-lib = ctypes.CDLL(libpath)
+file_path: str = os.path.dirname(os.path.abspath(__file__))
+lib_path: str = os.path.join(file_path, "../../lib/libcompress/build/libcompress.so")
+lib = ctypes.CDLL(os.path.normpath(lib_path))
 
 # ====
 # Compress binding
