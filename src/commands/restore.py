@@ -22,8 +22,6 @@ def restore(dest_path: str, trg_state_id: int):
         sys.exit(1)
 
     data_path: str = os.path.join(root_path, "data")
-    objects_path: str = os.path.join(root_path, "objects")
-
     db_path: str = os.path.join(data_path, "safesync-core.db")
     conn: Connection = sqlite_connect(db_path)
 
@@ -42,6 +40,6 @@ def restore(dest_path: str, trg_state_id: int):
   
     print(f"Previous State: {lts_state['id']} ({lts_state['time']}).")
     print(f"Roll-back state: {trg_state['id']} ({trg_state['time']}).") 
+    print(f"Please, remember to take a snapshot to persist the roll-back state.")
    
-    # ...
     conn.close()
