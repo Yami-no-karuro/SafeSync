@@ -117,25 +117,21 @@ static void huf_build_code_table(MinHNode *root, char *code, int top, char codes
 
 void huf_compress(const char *input_file, const char *output_file) {
     FILE *in = fopen(input_file, "rb");
-    if (!in) {
+    FILE *out = fopen(output_file, "wb");
+    if (!in || !out) {
         perror("An unexpected error occurred while executing the function: \"compress\"");
         exit(1);
     }
-    
+
     fseek(in, 0, SEEK_END);
     long size = ftell(in);
     if (size == 0) {
         fclose(in);
+        fclose(out);
         return;
     }
-    
+
     rewind(in);
-    
-    FILE *out = fopen(output_file, "wb");
-    if (!out) {
-        perror("An unexpected error occurred while executing the function: \"compress\"");
-        exit(1);
-    }
 
     unsigned freq[256] = {0};
     int c;
@@ -182,7 +178,8 @@ void huf_compress(const char *input_file, const char *output_file) {
 
 void huf_decompress(const char *input_file, const char *output_file) {
     FILE *in = fopen(input_file, "rb");
-    if (!in) {
+    FILE *out = fopen(output_file, "wb");
+    if (!in || !out) {
         perror("An unexpected error occurred while executing the function: \"decompress\"");
         exit(1);
     }
@@ -191,16 +188,11 @@ void huf_decompress(const char *input_file, const char *output_file) {
     long size = ftell(in);
     if (size == 0) {
         fclose(in);
+        fclose(out);
         return;
     }
 
     rewind(in);
-    
-    FILE *out = fopen(output_file, "wb");
-    if (!out) {
-        perror("An unexpected error occurred while executing the function: \"compress\"");
-        exit(1);
-    }
 
     unsigned freq[256];
     fread(freq, sizeof(unsigned), 256, in);
