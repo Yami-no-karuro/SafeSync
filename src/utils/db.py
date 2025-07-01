@@ -22,7 +22,7 @@ def create_sources_table(conn: Connection):
     except Exception as e:
         conn.close()
 
-        print(f"An unexpected error occurred: \"{e}\"")
+        print(f"An unexpected error occurred: \"{e}\".")
         sys.exit(1)
 
 def spawn_source(conn: Connection, state: int, source: dict) -> int | None:
@@ -40,7 +40,7 @@ def spawn_source(conn: Connection, state: int, source: dict) -> int | None:
     except Exception as e:
         conn.close()
 
-        print(f"An unexpected error occurred: \"{e}\"")
+        print(f"An unexpected error occurred: \"{e}\".")
         sys.exit(1)
 
 def fetch_sources_by_state(conn: Connection, state: int) -> dict | None:
@@ -64,7 +64,7 @@ def fetch_sources_by_state(conn: Connection, state: int) -> dict | None:
     except Exception as e:
         conn.close()
 
-        print(f"An unexpected error occurred: \"{e}\"")
+        print(f"An unexpected error occurred: \"{e}\".")
         sys.exit(1)
 
 def create_states_table(conn: Connection):
@@ -78,7 +78,7 @@ def create_states_table(conn: Connection):
     except Exception as e:
         conn.close()
 
-        print(f"An unexpected error occurred: \"{e}\"")
+        print(f"An unexpected error occurred: \"{e}\".")
         sys.exit(1)
 
 def spawn_state(conn: Connection) -> int | None:
@@ -87,7 +87,7 @@ def spawn_state(conn: Connection) -> int | None:
     except Exception as e:
         conn.close()
 
-        print(f"An unexpected error occurred: \"{e}\"")
+        print(f"An unexpected error occurred: \"{e}\".")
         sys.exit(1)
         
 def fetch_state_by_id(conn: Connection, id: int) -> dict | None:
@@ -100,7 +100,7 @@ def fetch_state_by_id(conn: Connection, id: int) -> dict | None:
     except Exception as e:
         conn.close()
 
-        print(f"An unexpected error occurred: \"{e}\"")
+        print(f"An unexpected error occurred: \"{e}\".")
         sys.exit(1)
 
 def fetch_latest_state(conn: Connection) -> dict | None:
@@ -119,5 +119,5 @@ def fetch_latest_state(conn: Connection) -> dict | None:
     except Exception as e:
         conn.close()
 
-        print(f"An unexpected error occurred: \"{e}\"")
+        print(f"An unexpected error occurred: \"{e}\".")
         sys.exit(1)

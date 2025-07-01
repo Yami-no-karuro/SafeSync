@@ -31,11 +31,11 @@ def snap(dest_path: str):
     if not new and not modified and not deleted:
         print("No changes detected.")
         conn.close()
-        return
+        sys.exit(0)
         
     print("===") 
-    print(f"New objects: {len(status['new'])}")
-    print(f"Modified objects: {len(status['modified'])}")
-    print(f"Deleted objects: {len(status['deleted'])}")
+    print(f"New objects: {len(status['new'])}.")
+    print(f"Modified objects: {len(status['modified'])}.")
+    print(f"Deleted objects: {len(status['deleted'])}.")
     
     conn.close()
