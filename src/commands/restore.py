@@ -1,14 +1,11 @@
 from lib.libcompress.bindings import huf_decompress
 
-from src.entities.state import add_state, get_state
+from src.entities.state import get_state
 from src.entities.state import get_latest_state
 
 from src.entities.sources import get_sources
 
 from lib.sqlite import sqlite_connect
-
-from src.utils.db import create_sources_table
-from src.utils.db import create_states_table
 
 from sqlite3 import Connection
 
@@ -39,7 +36,7 @@ def restore(dest_path: str, trg_state_id: int):
         print(f"Object \"{trg_source['obj_path']}\" successfully restored.")
   
     print(f"Previous State: {lts_state['id']} ({lts_state['time']}).")
-    print(f"Roll-back state: {trg_state['id']} ({trg_state['time']}).") 
-    print(f"Please, remember to take a snapshot to persist the roll-back state.")
+    print(f"Roll-back state: {trg_state['id']} ({trg_state['time']}).")
+    print(f"Attention! To persist the roll-back state a new snapshot must be executed.")
    
     conn.close()

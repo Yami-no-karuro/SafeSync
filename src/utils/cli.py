@@ -14,3 +14,4 @@ def print_help():
     print("safesync init")
     print("safesync status")
     print("safesync snap")
+    print("safesync restore <state_id>")
