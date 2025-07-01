@@ -4,6 +4,20 @@
 
 #include "huffman.h"
 
+static void huf_free_heap(MinHeap *heap) {
+    free(heap->array);
+    free(heap);
+}
+
+static void huf_free_tree(MinHNode *node) {
+    if (!node) 
+        return;
+
+    huf_free_tree(node->left);
+    huf_free_tree(node->right);
+    free(node);
+}
+
 static MinHNode *huf_new_node(char item, unsigned freq) {
     MinHNode *node = (MinHNode *)malloc(sizeof(MinHNode));
     node->left = node->right = NULL;
@@ -95,7 +109,9 @@ static MinHNode *huf_build_huffman_tree(unsigned freq[256]) {
         huf_insert_min_heap(heap, top);
     }
 
-    return huf_extract_min(heap);
+    MinHNode *root = huf_extract_min(heap);
+    huf_free_heap(heap);
+    return root;
 }
 
 static void huf_build_code_table(MinHNode *root, char *code, int top, char codes[256][MAX_TREE_HT]) {
@@ -172,6 +188,8 @@ void huf_compress(const char *input_file, const char *output_file) {
         fputc(buf, out);
     }
 
+    huf_free_tree(root);
+
     fclose(in);
     fclose(out);
 }
@@ -211,6 +229,8 @@ void huf_decompress(const char *input_file, const char *output_file) {
             }
         }
     }
+
+    huf_free_tree(root);
 
     fclose(in);
     fclose(out);
