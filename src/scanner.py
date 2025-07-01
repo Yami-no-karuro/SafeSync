@@ -4,7 +4,7 @@ from lib.libhash.bindings import fnv1a_file
 from src.entities.state import get_latest_state
 from src.entities.state import add_state
 
-from src.entities.sources import get_latest_sources
+from src.entities.sources import get_sources
 from src.entities.sources import add_source
 
 from src.entities.objects import create_source_object
@@ -30,7 +30,7 @@ def load_ignores(ignore_path: str) -> list[str]:
 
 def scan_directory(conn: Connection, storage_path: str, target_path: str, ignores: list, o_status: bool = False) -> dict:
     lts_state: dict = get_latest_state(conn)
-    lts_sources: dict = get_latest_sources(conn, lts_state["id"])
+    lts_sources: dict = get_sources(conn, lts_state["id"])
 
     status: dict = {
         "state_id": None,
@@ -41,12 +41,12 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
         "deleted": []
     }
 
-    crn_state: int = lts_state["id"]
+    crn_state: dict = lts_state
     if o_status is False:
-        crn_state: int = add_state(conn, lts_state["id"], lts_sources)
+        crn_state: dict = add_state(conn, lts_state["id"], lts_sources)
         
-    status["state_id"] = crn_state
-    status["state_time"] = lts_state["time"]
+    status["state_id"] = crn_state["id"]
+    status["state_time"] = crn_state["time"]
     
     ignores.append(".safesync");
     for root, _dirs, files in os.walk(target_path):
@@ -62,7 +62,7 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
         for file in files:
             status["scanned"] += 1
             path: str = os.path.join(root, file)
-            snap_file(conn, storage_path, crn_state, lts_sources, path, status, o_status)
+            snap_file(conn, storage_path, crn_state["id"], lts_sources, path, status, o_status)
 
     for key in lts_sources:
         entry: dict = lts_sources[key]

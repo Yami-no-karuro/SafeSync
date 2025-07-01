@@ -89,6 +89,19 @@ def spawn_state(conn: Connection) -> int | None:
 
         print(f"An unexpected error occurred: \"{e}\"")
         sys.exit(1)
+        
+def fetch_state_by_id(conn: Connection, id: int) -> dict | None:
+    try:
+        result: tuple | None = sqlite_fetchone(conn, "SELECT * FROM states WHERE id = ?;", (id,))
+        if result is None:
+            return result
+            
+        return {"id": result[0], "time": result[1]}
+    except Exception as e:
+        conn.close()
+
+        print(f"An unexpected error occurred: \"{e}\"")
+        sys.exit(1)
 
 def fetch_latest_state(conn: Connection) -> dict | None:
     try:

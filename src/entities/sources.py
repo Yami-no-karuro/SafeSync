@@ -5,7 +5,7 @@ from sqlite3 import Connection
 
 import sys
 
-def get_latest_sources(conn: Connection, state: int) -> dict:
+def get_sources(conn: Connection, state: int) -> dict:
     sources: dict | None = fetch_sources_by_state(conn, state)
     if sources is None:
         sources = {}
@@ -21,7 +21,7 @@ def add_source(conn: Connection, state: int, source: dict) -> dict:
     })
 
     if id is None:
-        print("Unable to create a new source in the current state.")
+        print("Unable to create a new source.")
         sys.exit(1)
         
     source["id"] = id

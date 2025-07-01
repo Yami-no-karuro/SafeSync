@@ -1,4 +1,5 @@
 from src.utils.db import fetch_latest_state
+from src.utils.db import fetch_state_by_id 
 from src.utils.db import spawn_state
 
 from sqlite3 import Connection
@@ -12,15 +13,23 @@ def get_latest_state(conn: Connection) -> dict:
         sys.exit(1)
 
     return state
+    
+def get_state(conn: Connection, id: int) -> dict | None:
+    return fetch_state_by_id(conn, id)
 
-def add_state(conn: Connection, lts_state: int, lts_sources: dict) -> int:
-    state: int | None = None
-    if lts_state == 1 and not lts_sources:
-        state = lts_state
+def add_state(conn: Connection, lts_state_id: int, lts_sources: dict) -> dict:
+    id: int | None = None
+    if lts_state_id == 1 and not lts_sources:
+        id = lts_state_id
     else:
-        state = spawn_state(conn)
-        if state is None:
+        id = spawn_state(conn)
+        if id is None:
             print("Unable to create a new state.")
             sys.exit(1)
+
+    state: dict | None = get_state(conn, id)
+    if state is None:
+        print("Unable to fetch new state data.")
+        sys.exit(1)
 
     return state
