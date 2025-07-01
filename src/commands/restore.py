@@ -37,7 +37,7 @@ def restore(dest_path: str, trg_state_id: int):
     trg_sources: dict = get_sources(conn, trg_state["id"])
     for key in trg_sources:
         trg_source: dict = trg_sources[key]
-        # huf_decompress(trg_source["obj_path"], trg_source["path"])
+        huf_decompress(trg_source["obj_path"], trg_source["path"])
         print(f"Object \"{trg_source['obj_path']}\" successfully restored.")
   
     print(f"Previous State: {lts_state['id']} ({lts_state['time']}).")
