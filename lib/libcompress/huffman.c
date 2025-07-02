@@ -156,7 +156,9 @@ void huf_compress(const char *input_file, const char *output_file) {
         freq[(unsigned char)c]++;
 
     rewind(in);
+
     fwrite(freq, sizeof(unsigned), 256, out);
+    fwrite(&size, sizeof(long), 1, out);
 
     MinHNode *root = huf_build_huffman_tree(freq);
     char codes[256][MAX_TREE_HT] = {{0}};
@@ -215,17 +217,22 @@ void huf_decompress(const char *input_file, const char *output_file) {
     unsigned freq[256];
     fread(freq, sizeof(unsigned), 256, in);
 
+    long original_size;
+    fread(&original_size, sizeof(long), 1, in);
+
     MinHNode *root = huf_build_huffman_tree(freq);
     MinHNode *curr = root;
 
     int byte;
-    while ((byte = fgetc(in)) != EOF) {
-        for (int i = 7; i >= 0; --i) {
+    long written = 0;
+    while ((byte = fgetc(in)) != EOF && written < original_size) {
+        for (int i = 7; i >= 0 && written < original_size; --i) {
             int bit = (byte >> i) & 1;
             curr = bit ? curr->right : curr->left;
             if (huf_is_leaf(curr)) {
                 fputc(curr->item, out);
                 curr = root;
+                written++;
             }
         }
     }
