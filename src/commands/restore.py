@@ -1,7 +1,7 @@
 from lib.sqlite import sqlite_connect
 from src.entities.state import get_state
 from src.entities.state import get_latest_state
-from src.restorer import restore_directory
+from src.restore import restore_directory
 
 from sqlite3 import Connection
 

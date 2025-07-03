@@ -2,7 +2,7 @@ from lib.sqlite import sqlite_connect
 from src.utils.db import create_sources_table
 from src.utils.db import create_states_table
 from src.utils.db import spawn_state
-from src.scanner import scan_directory
+from src.scan import scan_directory
 
 from sqlite3 import Connection
 
