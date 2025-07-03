@@ -26,3 +26,30 @@ This is useful to avoid backing up temporary files, logs, build artifacts, or an
 
 1. Create a file named `.syncignore` in the root directory of the project.
 2. List the patterns to exclude, one per line. (Lines starting with `#` are treated as comments, blank lines are ignored)
+
+### Commands
+
+**SafeSync** offers a set of commands to manage and restore snapshots of your project directory.  
+Below is a list of available commands and their descriptions:
+
+- `safesync init`  
+  Initializes SafeSync in the current directory.  
+  This sets up the internal structure needed to start tracking file versions.  
+
+- `safesync snap`  
+  Takes a snapshot of the current state of the directory.  
+  Only new or modified files since the last snapshot are stored.  
+
+- `safesync status`  
+  Displays the current status of the directory.  
+  Shows which files have been added, modified, or deleted since the last snapshot.  
+  Useful for checking what will be included in the next snapshot.
+
+- `safesync states`  
+  Lists all previously saved snapshots (states).  
+  Each state is associated with a unique identifier that can be used to restore it later.
+
+- `safesync restore <state_id>`  
+  Restores the project directory to the snapshot identified by `<state_id>`.  
+
+You can display this help at any time by running the `safesync` command without arguments.
