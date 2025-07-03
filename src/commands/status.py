@@ -1,6 +1,5 @@
 from lib.sqlite import sqlite_connect
 from src.scanner import scan_directory
-from src.utils.ignore import load_ignores
 
 from sqlite3 import Connection
 
@@ -20,8 +19,7 @@ def status(dest_path: str):
     db_path: str = os.path.join(data_path, "safesync-core.db")
     conn: Connection = sqlite_connect(db_path)
     
-    ignores: list = load_ignores(ignore_path)
-    status: dict = scan_directory(conn, objects_path, dest_path, ignores, True)
+    status: dict = scan_directory(conn, objects_path, dest_path, ignore_path, True)
     
     print(f"State: {status['state_id']} ({status['state_time']}).")
     print(f"Scanned objects: {status['scanned']}.")

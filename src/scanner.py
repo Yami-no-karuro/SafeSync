@@ -1,21 +1,22 @@
 from lib.libhash.bindings import fnv1a
 from lib.libhash.bindings import fnv1a_file
-
 from src.entities.state import get_latest_state
 from src.entities.state import add_state
-
 from src.entities.sources import get_sources
 from src.entities.sources import add_source
-
 from src.entities.objects import create_source_object
+from src.utils.ignore import load_ignores
 
 from sqlite3 import Connection
 
 import os
 
-def scan_directory(conn: Connection, storage_path: str, target_path: str, ignores: list, o_status: bool = False) -> dict:
+def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore_path: str, o_status: bool = False) -> dict:
     lts_state: dict = get_latest_state(conn)
     lts_sources: dict = get_sources(conn, lts_state["id"])
+    
+    ignores: list = load_ignores(ignore_path)
+    ignores.append(".safesync");
 
     status: dict = {
         "state_id": None,
@@ -33,7 +34,6 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
     status["state_id"] = crn_state["id"]
     status["state_time"] = crn_state["time"]
     
-    ignores.append(".safesync");
     for root, _dirs, files in os.walk(target_path):
         ignored: bool = False
         crnt: list = root.split(os.sep)
