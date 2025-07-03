@@ -1,8 +1,7 @@
-from lib.libcompress.bindings import huf_decompress
 from lib.sqlite import sqlite_connect
 from src.entities.state import get_state
 from src.entities.state import get_latest_state
-from src.entities.sources import get_sources
+from src.restorer import restore_directory
 
 from sqlite3 import Connection
 
@@ -15,6 +14,7 @@ def restore(dest_path: str, trg_state_id: int):
         print("Not a SafeSync repository.")
         sys.exit(1)
 
+    ignore_path: str = os.path.join(dest_path, ".syncignore")
     data_path: str = os.path.join(root_path, "data")
     db_path: str = os.path.join(data_path, "safesync-core.db")
     conn: Connection = sqlite_connect(db_path)
@@ -26,11 +26,7 @@ def restore(dest_path: str, trg_state_id: int):
         conn.close()
         sys.exit(1)
         
-    trg_sources: dict = get_sources(conn, trg_state["id"])
-    for key in trg_sources:
-        trg_source: dict = trg_sources[key]
-        huf_decompress(trg_source["obj_path"], trg_source["path"])
-        print(f"Object \"{trg_source['obj_path']}\" successfully restored.")
+    restore_directory(conn, dest_path, ignore_path, trg_state["id"])
   
     print(f"Previous State: {lts_state['id']} ({lts_state['time']}).")
     print(f"Roll-back state: {trg_state['id']} ({trg_state['time']}).")
