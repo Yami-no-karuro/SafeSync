@@ -5,15 +5,15 @@ from sqlite3 import Connection
 
 import sys
 
-def get_sources(conn: Connection, state: int) -> dict:
-    sources: dict | None = fetch_sources_by_state(conn, state)
+def get_sources(conn: Connection, state_id: int) -> dict:
+    sources: dict | None = fetch_sources_by_state(conn, state_id)
     if sources is None:
         sources = {}
 
     return sources
 
-def add_source(conn: Connection, state: int, source: dict) -> dict:
-    id: int | None = spawn_source(conn, state, {
+def add_source(conn: Connection, state_id: int, source: dict) -> dict:
+    id: int | None = spawn_source(conn, state_id, {
         "obj_path": source["obj_path"],
         "path": source["path"],
         "path_hash": source["path_hash"],

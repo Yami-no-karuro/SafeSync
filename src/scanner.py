@@ -47,7 +47,7 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
         for file in files:
             status["scanned"] += 1
             path: str = os.path.join(root, file)
-            snap_file(conn, storage_path, crn_state["id"], lts_sources, path, status, o_status)
+            snap_file(conn, path, storage_path, crn_state["id"], lts_sources, status, o_status)
 
     for key in lts_sources:
         entry: dict = lts_sources[key]
@@ -55,7 +55,7 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
 
     return status
 
-def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, file_path: str, status: dict, o_status: bool = False):
+def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int, sources: dict, status: dict, o_status: bool = False):
     file_path_hash: str = hex(fnv1a(file_path.encode()))[2:]
     content_hash: str = hex(fnv1a_file(file_path))[2:]
 
@@ -66,7 +66,7 @@ def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, fi
         if source["content_hash"] != content_hash:
             status["modified"].append((file_path, file_path_hash))
             if o_status is False:
-                obj_path = create_source_object(storage_path, state, file_path, file_path_hash)
+                obj_path = create_source_object(storage_path, state_id, file_path, file_path_hash)
                 print(f"Object \"{obj_path}\" successfully added.")
         else:
             if o_status is False:
@@ -76,11 +76,11 @@ def snap_file(conn: Connection, storage_path: str, state: int, sources: dict, fi
     else:
         status["new"].append((file_path, file_path_hash))
         if o_status is False:
-            obj_path = create_source_object(storage_path, state, file_path, file_path_hash)
+            obj_path = create_source_object(storage_path, state_id, file_path, file_path_hash)
             print(f"Object \"{obj_path}\" successfully added.")
 
     if o_status is False:
-        add_source(conn, state, {
+        add_source(conn, state_id, {
             "obj_path": obj_path,
             "path": file_path,
             "path_hash": file_path_hash,
