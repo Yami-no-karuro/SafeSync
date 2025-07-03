@@ -1,11 +1,8 @@
 from lib.libcompress.bindings import huf_decompress
-
+from lib.sqlite import sqlite_connect
 from src.entities.state import get_state
 from src.entities.state import get_latest_state
-
 from src.entities.sources import get_sources
-
-from lib.sqlite import sqlite_connect
 
 from sqlite3 import Connection
 

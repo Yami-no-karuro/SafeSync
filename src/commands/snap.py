@@ -1,7 +1,6 @@
 from lib.sqlite import sqlite_connect
-
-from src.scanner import load_ignores
 from src.scanner import scan_directory
+from src.utils.ignore import load_ignores
 
 from sqlite3 import Connection
 

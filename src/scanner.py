@@ -13,21 +13,6 @@ from sqlite3 import Connection
 
 import os
 
-def load_ignores(ignore_path: str) -> list[str]:
-    if not os.path.exists(ignore_path):
-        return []
-
-    patterns: list[str] = []
-    with open(ignore_path, "r") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-
-            patterns.append(line)
-
-    return patterns
-
 def scan_directory(conn: Connection, storage_path: str, target_path: str, ignores: list, o_status: bool = False) -> dict:
     lts_state: dict = get_latest_state(conn)
     lts_sources: dict = get_sources(conn, lts_state["id"])
