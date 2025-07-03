@@ -24,7 +24,8 @@ def restore_directory(conn: Connection, target_path: str, ignore_path: str, targ
             continue
             
         for file in files:
-            restore_file(file, trg_sources)
+            path: str = os.path.join(root, file)
+            restore_file(path, trg_sources)
         
     for key in trg_sources:
         source: dict = trg_sources[key]
