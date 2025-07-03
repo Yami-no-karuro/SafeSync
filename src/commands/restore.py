@@ -22,7 +22,7 @@ def restore(dest_path: str, trg_state_id: int):
     lts_state: dict = get_latest_state(conn)
     trg_state: dict | None = get_state(conn, trg_state_id)
     if trg_state is None:
-        print(f"Unregistered state: {trg_state}.")
+        print(f"Unregistered state: {trg_state_id}.")
         conn.close()
         sys.exit(1)
         
