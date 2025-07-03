@@ -25,12 +25,19 @@ def restore_directory(conn: Connection, target_path: str, ignore_path: str, targ
             
         for file in files:
             restore_file(file, trg_sources)
+        
+    for key in trg_sources:
+        source: dict = trg_sources[key]
+        huf_decompress(source["obj_path"], source["path"])
+        print(f"Object \"{source['obj_path']}\" successfully restored.")
 
 def restore_file(file_path: str, sources: dict):
     file_path_hash: str = hex(fnv1a(file_path.encode()))[2:]
     if file_path_hash in sources:
         source: dict = sources[file_path_hash]
         huf_decompress(source["obj_path"], source["path"])
+        
+        del sources[file_path_hash]
         print(f"Object \"{source['obj_path']}\" successfully restored.")
     else:
         os.remove(file_path)
