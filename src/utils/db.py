@@ -102,6 +102,26 @@ def fetch_state_by_id(conn: Connection, id: int) -> dict | None:
 
         print(f"An unexpected error occurred: \"{e}\".")
         sys.exit(1)
+        
+def fetch_states(conn: Connection) -> list:
+    try:
+        results: list[tuple] | None = sqlite_fetchall(conn, "SELECT * FROM states;")
+        if results is None:
+            return []
+           
+        states: list = []
+        for result in results:
+            states.append({
+                "id": result[0],
+                "time": result[1]
+            })
+    
+        return states
+    except Exception as e:
+        conn.close()
+
+        print(f"An unexpected error occurred: \"{e}\".")
+        sys.exit(1)
 
 def fetch_latest_state(conn: Connection) -> dict | None:
     try:

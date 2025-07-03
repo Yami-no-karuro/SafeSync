@@ -2,6 +2,7 @@ from src.commands.init import init
 from src.commands.snap import snap
 from src.commands.status import status
 from src.commands.restore import restore
+from src.commands.states import states
 
 from src.utils.cli import print_help
 
@@ -22,6 +23,8 @@ if __name__ == "__main__":
         status(working_dir)
     elif command == "snap":
         snap(working_dir)
+    elif command == "states":
+        states(working_dir)
     elif command == "restore" and len(sys.argv) == 3:
         trg_state_id: int = int(sys.argv[2])
         restore(working_dir, trg_state_id)

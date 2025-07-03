@@ -1,3 +1,4 @@
+from src.utils.db import fetch_states
 from src.utils.db import fetch_latest_state
 from src.utils.db import fetch_state_by_id 
 from src.utils.db import spawn_state
@@ -13,6 +14,9 @@ def get_latest_state(conn: Connection) -> dict:
         sys.exit(1)
 
     return state
+    
+def get_states(conn: Connection) -> list:
+    return fetch_states(conn)
     
 def get_state(conn: Connection, id: int) -> dict | None:
     return fetch_state_by_id(conn, id)
