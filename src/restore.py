@@ -30,7 +30,7 @@ def restore_directory(conn: Connection, target_path: str, ignore_path: str, targ
     for key in trg_sources:
         source: dict = trg_sources[key]
         huf_decompress(source["obj_path"], source["path"])
-        print(f"Object \"{source['obj_path']}\" successfully restored.")
+        print(f"File \"{source['path']}\" ({source['path_hash']}) successfully restored.")
 
 def restore_file(file_path: str, sources: dict):
     file_path_hash: str = hex(fnv1a(file_path.encode()))[2:]
@@ -39,6 +39,6 @@ def restore_file(file_path: str, sources: dict):
         huf_decompress(source["obj_path"], source["path"])
         
         del sources[file_path_hash]
-        print(f"Object \"{source['obj_path']}\" successfully restored.")
+        print(f"File \"{file_path}\" ({file_path_hash}) successfully restored.")
     else:
         os.remove(file_path)
