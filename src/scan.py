@@ -59,7 +59,7 @@ def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int
             status["modified"].append((file_path, file_path_hash))
             if not o_status:
                 obj_path = create_source_object(storage_path, state_id, file_path, file_path_hash)
-                print(f"Object \"{obj_path}\" successfully added.")
+                print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
         else:
             if not o_status:
                 obj_path = source["obj_path"]
@@ -69,7 +69,7 @@ def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int
         status["new"].append((file_path, file_path_hash))
         if not o_status:
             obj_path = create_source_object(storage_path, state_id, file_path, file_path_hash)
-            print(f"Object \"{obj_path}\" successfully added.")
+            print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
 
     if not o_status:
         add_source(conn, state_id, {
