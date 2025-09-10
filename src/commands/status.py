@@ -2,24 +2,37 @@ from lib.sqlite import sqlite_connect
 from src.scan import scan_directory
 
 from sqlite3 import Connection
+from os.path import exists as os_exists
+from os.path import join as os_join
+from sys import exit as sys_exit
 
-import sys
-import os
+def get_paths(dest_path: str) -> dict:
+    paths: dict = {}
+
+    paths["dest_path"] = dest_path
+    paths["root_path"] = os_join(dest_path, ".safesync")
+    if not os_exists(paths["root_path"]):
+        print("Not a SafeSync repository.")
+        sys_exit(1)
+
+    paths["data_path"] = os_join(paths["root_path"], "data")
+    paths["objects_path"] = os_join(paths["root_path"], "objects")
+    paths["ignore_path"] = os_join(paths["dest_path"], ".syncignore")
+    paths["db_path"] = os_join(paths["data_path"], "safesync-core.db")
+
+    return paths
 
 def status(dest_path: str):
-    root_path: str = os.path.join(dest_path, ".safesync")
-    if not os.path.exists(root_path):
-        print("Not a SafeSync repository.")
-        sys.exit(1)
-
-    data_path: str = os.path.join(root_path, "data")
-    objects_path: str = os.path.join(root_path, "objects")
-    ignore_path: str = os.path.join(dest_path, ".syncignore")
-
-    db_path: str = os.path.join(data_path, "safesync-core.db")
-    conn: Connection = sqlite_connect(db_path)
+    paths: dict = get_paths(dest_path)
+    conn: Connection = sqlite_connect(paths["db_path"])
     
-    status: dict = scan_directory(conn, objects_path, dest_path, ignore_path, True)
+    status: dict = scan_directory(
+        conn, 
+        paths["objects_path"], 
+        paths["dest_path"], 
+        paths["ignore_path"], 
+        True
+    )
     
     print(f"State: {status['state_id']} ({status['state_time']}).")
     print(f"Scanned objects: {status['scanned']}.")
@@ -40,7 +53,7 @@ def status(dest_path: str):
     if not new and not modified and not deleted:
         print("No changes detected.")
         conn.close()
-        sys.exit(0)
+        sys_exit(0)
        
     print("===") 
     print(f"New objects: {len(status['new'])}.")
