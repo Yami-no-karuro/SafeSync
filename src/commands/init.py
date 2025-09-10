@@ -1,13 +1,12 @@
+import sys
+import os
+from sqlite3 import Connection
+
 from lib.sqlite import sqlite_connect
 from src.utils.db import create_sources_table
 from src.utils.db import create_states_table
 from src.utils.db import spawn_state
 from src.scan import scan_directory
-
-from sqlite3 import Connection
-
-import sys
-import os
 
 def init(dest_path: str):
     root_path: str = os.path.join(dest_path, ".safesync")

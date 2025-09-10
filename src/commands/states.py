@@ -1,8 +1,8 @@
+from sqlite3 import Connection
+
 from src.entities.state import get_states
 from lib.sqlite import sqlite_connect
 from src.utils.path import get_paths
-
-from sqlite3 import Connection
 
 def states(dest_path: str):
     paths: dict = get_paths(dest_path)

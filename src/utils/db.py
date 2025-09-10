@@ -1,10 +1,9 @@
+import sys
+from sqlite3 import Connection
+
 from lib.sqlite import sqlite_fetchone
 from lib.sqlite import sqlite_fetchall
 from lib.sqlite import sqlite_execute
-
-from sqlite3 import Connection
-
-import sys
 
 def create_sources_table(conn: Connection):
     try:

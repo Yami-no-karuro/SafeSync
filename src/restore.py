@@ -1,34 +1,29 @@
+import os
+from sqlite3 import Connection
+from typing import List
+
 from lib.libhash.bindings import fnv1a
 from lib.libcompress.bindings import huf_decompress
 from src.entities.sources import get_sources
 from src.utils.ignore import load_ignores
 
-from sqlite3 import Connection
-
-import os
+def should_ignore(path: str, ignores: List[str]) -> bool:
+    segments: list = path.split(os.sep)
+    return any(ign in segments for ign in ignores)
 
 def restore_directory(conn: Connection, target_path: str, ignore_path: str, target_state_id: int):
     trg_sources: dict = get_sources(conn, target_state_id)
-    
-    ignores: list = load_ignores(ignore_path)
-    ignores.append(".safesync");
-    
-    for root, _dirs, files in os.walk(target_path):
-        ignored: bool = False
-        crnt: list = root.split(os.sep)
-        for ignr in ignores:
-            if ignr in crnt:
-                ignored = True
+    ignores: list = load_ignores(ignore_path) + [".safesync"]
 
-        if ignored:
+    for root, _, files in os.walk(target_path):
+        if should_ignore(root, ignores):
             continue
-            
+
         for file in files:
             path: str = os.path.join(root, file)
             restore_file(path, trg_sources)
-        
-    for key in trg_sources:
-        source: dict = trg_sources[key]
+
+    for key, source in trg_sources.items():
         huf_decompress(source["obj_path"], source["path"])
         print(f"Object \"{source['obj_path']}\" successfully restored.")
 
@@ -37,7 +32,7 @@ def restore_file(file_path: str, sources: dict):
     if file_path_hash in sources:
         source: dict = sources[file_path_hash]
         huf_decompress(source["obj_path"], source["path"])
-        
+
         del sources[file_path_hash]
         print(f"Object \"{source['obj_path']}\" successfully restored.")
     else:

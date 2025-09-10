@@ -1,9 +1,8 @@
-from src.utils.db import fetch_sources_by_state
-from src.utils.db import spawn_source
-
+import sys
 from sqlite3 import Connection
 
-import sys
+from src.utils.db import fetch_sources_by_state
+from src.utils.db import spawn_source
 
 def get_sources(conn: Connection, state_id: int) -> dict:
     sources: dict | None = fetch_sources_by_state(conn, state_id)

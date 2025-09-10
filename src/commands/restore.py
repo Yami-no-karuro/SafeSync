@@ -1,11 +1,11 @@
+from sqlite3 import Connection
+from sys import exit as sys_exit
+
 from lib.sqlite import sqlite_connect
 from src.entities.state import get_state
 from src.entities.state import get_latest_state
 from src.restore import restore_directory
 from src.utils.path import get_paths
-
-from sqlite3 import Connection
-from sys import exit as sys_exit
 
 def restore(dest_path: str, trg_state_id: int):
     paths: dict = get_paths(dest_path)

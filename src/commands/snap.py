@@ -1,9 +1,9 @@
+from sys import exit as sys_exit
+from sqlite3 import Connection
+
 from lib.sqlite import sqlite_connect
 from src.scan import scan_directory
 from src.utils.path import get_paths
-
-from sqlite3 import Connection
-from sys import exit as sys_exit
 
 def snap(dest_path: str):
     paths: dict = get_paths(dest_path)

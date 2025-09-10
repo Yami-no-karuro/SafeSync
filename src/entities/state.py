@@ -1,11 +1,10 @@
+import sys
+from sqlite3 import Connection
+
 from src.utils.db import fetch_states
 from src.utils.db import fetch_latest_state
 from src.utils.db import fetch_state_by_id 
 from src.utils.db import spawn_state
-
-from sqlite3 import Connection
-
-import sys
 
 def get_latest_state(conn: Connection) -> dict:
     state: dict | None = fetch_latest_state(conn)
