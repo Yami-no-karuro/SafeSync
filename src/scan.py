@@ -13,8 +13,34 @@ def should_ignore(path: str, ignores: List[str]) -> bool:
     return any(ign in segments for ign in ignores)
 
 def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore_path: str, o_status: bool = False) -> dict:
+    from src.utils.db import fetch_states, fetch_sources_by_state
+
     lts_state: dict = get_latest_state(conn)
-    lts_sources: dict = get_sources(conn, lts_state["id"])
+
+    all_states = fetch_states(conn)
+    state_ids = [s["id"] for s in sorted(all_states, key=lambda x: x["id"]) if s["id"] <= lts_state["id"]]
+    
+    virtual_sources = {}
+    removed = set()
+    
+    for sid in state_ids:
+        sources = fetch_sources_by_state(conn, sid)
+        if not sources:
+            continue
+        for src in sources.values():
+            if src["path_hash"] in removed:
+                continue
+            if src["update_type"] == 2:
+                if src["path_hash"] in virtual_sources:
+                    del virtual_sources[src["path_hash"]]
+                removed.add(src["path_hash"])
+            elif src["update_type"] == 1:
+                virtual_sources[src["path_hash"]] = {
+                    "obj_path": src["obj_path"],
+                    "path": src["path"],
+                    "path_hash": src["path_hash"],
+                    "content_hash": src["content_hash"]
+                }
 
     ignores: list = load_ignores(ignore_path) + [".safesync"]
     status: dict = {
@@ -25,14 +51,15 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
         "modified": [],
         "deleted": []
     }
-   
+
     crn_state: dict = lts_state
     if not o_status:
-        crn_state: dict = add_state(conn, lts_state["id"], lts_sources)
-        
+        crn_state: dict = add_state(conn, lts_state["id"], virtual_sources)
+
     status["state_id"] = crn_state["id"]
     status["state_time"] = crn_state["time"]
 
+    sources_for_scan = dict(virtual_sources)
     for root, _, files in os.walk(target_path):
         if should_ignore(root, ignores):
             continue
@@ -40,10 +67,18 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
         for file in files:
             status["scanned"] += 1
             path: str = os.path.join(root, file)
-            snap_file(conn, path, storage_path, crn_state["id"], lts_sources, status, o_status)
+            snap_file(conn, path, storage_path, crn_state["id"], sources_for_scan, status, o_status)
 
-    for _, entry in lts_sources.items():
+    for _, entry in sources_for_scan.items():
         status["deleted"].append((entry["path"], [entry["path_hash"]]))
+        if not o_status:
+            add_source(conn, crn_state["id"], {
+                "obj_path": None,
+                "path": entry["path"],
+                "path_hash": entry["path_hash"],
+                "content_hash": None,
+                "update_type": 2
+            })
 
     return status
 
@@ -60,21 +95,23 @@ def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int
             if not o_status:
                 obj_path = create_source_object(storage_path, state_id, file_path, file_path_hash)
                 print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
-        else:
-            if not o_status:
-                obj_path = source["obj_path"]
-
+                add_source(conn, state_id, {
+                    "obj_path": obj_path,
+                    "path": file_path,
+                    "path_hash": file_path_hash,
+                    "content_hash": content_hash,
+                    "update_type": 1
+                })
         del sources[file_path_hash]
     else:
         status["new"].append((file_path, file_path_hash))
         if not o_status:
             obj_path = create_source_object(storage_path, state_id, file_path, file_path_hash)
             print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
-
-    if not o_status:
-        add_source(conn, state_id, {
-            "obj_path": obj_path,
-            "path": file_path,
-            "path_hash": file_path_hash,
-            "content_hash": content_hash
-        })
+            add_source(conn, state_id, {
+                "obj_path": obj_path,
+                "path": file_path,
+                "path_hash": file_path_hash,
+                "content_hash": content_hash,
+                "update_type": 1
+            })

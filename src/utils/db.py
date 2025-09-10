@@ -15,6 +15,7 @@ def create_sources_table(conn: Connection):
                 path TEXT NOT NULL,
                 path_hash TEXT NOT NULL,
                 content_hash TEXT NOT NULL,
+                update_type INTEGER NOT NULL,
                 FOREIGN KEY (state) REFERENCES states(id) ON DELETE CASCADE
             );
         """)
@@ -27,14 +28,15 @@ def create_sources_table(conn: Connection):
 def spawn_source(conn: Connection, state: int, source: dict) -> int | None:
     try:
         return sqlite_execute(conn, """INSERT INTO sources
-            (state, obj_path, path, path_hash, content_hash)
-            VALUES (?, ?, ?, ?, ?);
+            (state, obj_path, path, path_hash, content_hash, update_type)
+            VALUES (?, ?, ?, ?, ?, ?);
         """, (
             state,
             source["obj_path"],
             source["path"],
             source["path_hash"],
-            source["content_hash"]
+            source["content_hash"],
+            source["update_type"]
         ))
     except Exception as e:
         conn.close()
@@ -56,7 +58,8 @@ def fetch_sources_by_state(conn: Connection, state: int) -> dict | None:
                 "obj_path": source[2],
                 "path": source[3],
                 "path_hash": source[4],
-                "content_hash": source[5]
+                "content_hash": source[5],
+                "update_type": source[6]
             }
     
         return sources

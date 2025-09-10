@@ -13,10 +13,11 @@ def get_sources(conn: Connection, state_id: int) -> dict:
 
 def add_source(conn: Connection, state_id: int, source: dict) -> dict:
     id: int | None = spawn_source(conn, state_id, {
-        "obj_path": source["obj_path"],
+        "obj_path": source.get("obj_path"),
         "path": source["path"],
         "path_hash": source["path_hash"],
-        "content_hash": source["content_hash"]
+        "content_hash": source.get("content_hash"),
+        "update_type": source["update_type"]
     })
 
     if id is None:
