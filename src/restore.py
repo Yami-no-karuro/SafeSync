@@ -52,4 +52,4 @@ def restore_directory(conn: Connection, target_path: str, ignore_path: str, targ
             path = os.path.abspath(os.path.join(root, file))
             if path not in restored_paths:
                 os.remove(path)
-                print(f"File \"{path}\" deleted (not present in target state).")
+                print(f"File \"{path}\" successfully deleted (not present in target state).")
