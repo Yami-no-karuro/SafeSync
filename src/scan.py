@@ -30,8 +30,8 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
     removed = set()
     
     for sid in state_ids:
-        sources = fetch_sources_by_state(conn, sid)
-        if not sources:
+        sources: dict | None = fetch_sources_by_state(conn, sid)
+        if sources is None:
             continue
             
         for src in sources.values():

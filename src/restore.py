@@ -20,8 +20,8 @@ def restore_directory(conn: Connection, target_path: str, ignore_path: str, targ
     removed = set()
 
     for sid in state_ids:
-        sources = fetch_sources_by_state(conn, sid)
-        if not sources:
+        sources: dict | None = fetch_sources_by_state(conn, sid)
+        if sources is None:
             continue
             
         for src in sources.values():
@@ -40,7 +40,13 @@ def restore_directory(conn: Connection, target_path: str, ignore_path: str, targ
 
     restored_paths = set()
     for src in file_map.values():
-        huf_decompress(src["obj_path"], src["path"])
+        
+        try:
+            huf_decompress(src["obj_path"], src["path"])
+        except Exception as e:
+            print(f"An unexpected error occurred during the execution of \"huf_decompress\" on file {src['obj_path']}: {e}")
+            continue
+        
         print(f"File \"{src['path']}\" successfully restored.")
         restored_paths.add(os.path.abspath(src["path"]))
 
