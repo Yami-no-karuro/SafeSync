@@ -1,5 +1,6 @@
 import os
 import sys
+
 from sqlite3 import Connection
 from typing import List
 
