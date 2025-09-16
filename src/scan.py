@@ -12,8 +12,7 @@ from src.entities.objects import create_source_object
 from src.utils.ignore import load_ignores
 
 def should_ignore(path: str, ignores: list) -> bool:
-    segments: list = path.split(os.sep)
-    return any(ign in segments for ign in ignores)
+    return any(ign in path for ign in ignores)
     
 def get_state_ids(states: list, max_id: int) -> list:
     sorted_states: list = sorted(states, key = lambda s: s["id"])

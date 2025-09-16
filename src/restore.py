@@ -7,9 +7,8 @@ from src.utils.ignore import load_ignores
 from src.entities.state import fetch_states
 from src.entities.sources import fetch_sources_by_state
 
-def should_ignore(path: str, ignores: List[str]) -> bool:
-    segments: list = path.split(os.sep)
-    return any(ign in segments for ign in ignores)
+def should_ignore(path: str, ignores: list) -> bool:
+    return any(ign in path for ign in ignores)
     
 def get_state_ids(states: list, max_id: int) -> list:
     sorted_states: list = sorted(states, key = lambda s: s["id"], reverse = True)
