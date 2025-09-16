@@ -101,8 +101,7 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
     return status
 
 def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int, sources: dict, status: dict, o_status: bool = False):
-    if not os.path.exists(file_path):
-        print(f"Unable to create object, file: \"{file_path}\" does not exist.")
+    if not os.path.exists(file_path) or not os.path.isfile(file_path) or not os.path.getsize(file_path):
         return
 
     try:

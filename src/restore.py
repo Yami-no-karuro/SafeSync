@@ -49,7 +49,6 @@ def restore_directory(conn: Connection, target_path: str, ignore_path: str, targ
 
     restored_paths = set()
     for src in file_map.values():
-        
         try:
             huf_decompress(src["obj_path"], src["path"])
         except Exception as e:
