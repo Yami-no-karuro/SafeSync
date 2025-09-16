@@ -2,7 +2,6 @@ import os
 import sys
 
 from sqlite3 import Connection
-from typing import List
 
 from lib.libhash.bindings import fnv1a, fnv1a_file
 from src.entities.state import fetch_latest_state, add_state
@@ -12,9 +11,19 @@ from src.entities.sources import fetch_sources_by_state
 from src.entities.objects import create_source_object
 from src.utils.ignore import load_ignores
 
-def should_ignore(path: str, ignores: List[str]) -> bool:
+def should_ignore(path: str, ignores: list) -> bool:
     segments: list = path.split(os.sep)
     return any(ign in segments for ign in ignores)
+    
+def get_state_ids(states: list, max_id: int) -> list:
+    sorted_states: list = sorted(states, key = lambda s: s["id"])
+    filtered_ids: list = []
+    
+    for s in sorted_states:
+        if s["id"] <= max_id:
+            filtered_ids.append(s["id"])
+            
+    return filtered_ids
 
 def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore_path: str, o_status: bool = False) -> dict:
     lts_state: dict | None = fetch_latest_state(conn)
@@ -23,8 +32,8 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
         conn.close()
         sys.exit(1)
     
-    all_states = fetch_states(conn)
-    state_ids = [s["id"] for s in sorted(all_states, key=lambda x: x["id"]) if s["id"] <= lts_state["id"]]
+    all_states: list = fetch_states(conn)
+    state_ids: list = get_state_ids(all_states, lts_state["id"])
     
     virtual_sources = {}
     removed = set()

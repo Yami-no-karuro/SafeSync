@@ -10,11 +10,21 @@ from src.entities.sources import fetch_sources_by_state
 def should_ignore(path: str, ignores: List[str]) -> bool:
     segments: list = path.split(os.sep)
     return any(ign in segments for ign in ignores)
+    
+def get_state_ids(states: list, max_id: int) -> list:
+    sorted_states: list = sorted(states, key = lambda s: s["id"], reverse = True)
+    filtered_ids: list = []
+    
+    for s in sorted_states:
+        if s["id"] <= max_id:
+            filtered_ids.append(s["id"])
+            
+    return filtered_ids
 
 def restore_directory(conn: Connection, target_path: str, ignore_path: str, target_state_id: int):
     ignores: list = load_ignores(ignore_path) + [".safesync"]
-    all_states = fetch_states(conn)
-    state_ids = [s["id"] for s in sorted(all_states, key=lambda x: x["id"], reverse=True) if s["id"] <= target_state_id]
+    all_states: list = fetch_states(conn)
+    state_ids: list = get_state_ids(all_states, target_state_id)
 
     file_map = {}
     removed = set()
