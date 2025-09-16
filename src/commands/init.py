@@ -3,9 +3,9 @@ import os
 from sqlite3 import Connection
 
 from lib.sqlite import sqlite_connect
-from src.utils.db import create_sources_table
-from src.utils.db import create_states_table
-from src.utils.db import spawn_state
+from src.entities.sources import create_sources_table
+from src.entities.state import spawn_state
+from src.entities.state import create_states_table
 from src.scan import scan_directory
 
 def init(dest_path: str):
@@ -28,7 +28,12 @@ def init(dest_path: str):
     create_sources_table(conn)
     spawn_state(conn)
 
-    status: dict = scan_directory(conn, objects_path, dest_path, ignore_path)
+    status: dict = scan_directory(
+        conn, 
+        objects_path, 
+        dest_path, 
+        ignore_path
+    )
     
     new: list = status["new"]
     modified: list = status["modified"]

@@ -1,4 +1,4 @@
-from sys import exit as sys_exit
+import sys
 from sqlite3 import Connection
 
 from lib.sqlite import sqlite_connect
@@ -36,7 +36,7 @@ def status(dest_path: str):
     if not new and not modified and not deleted:
         print("No changes detected.")
         conn.close()
-        sys_exit(0)
+        sys.exit(0)
        
     print("===") 
     print(f"New objects: {len(status['new'])}.")
