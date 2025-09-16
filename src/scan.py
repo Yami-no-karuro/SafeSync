@@ -4,6 +4,7 @@ import sys
 from sqlite3 import Connection
 from typing import List
 
+from entities import objects
 from lib.libhash.bindings import fnv1a, fnv1a_file
 from src.entities.state import fetch_latest_state, add_state
 from src.entities.state import fetch_states
@@ -118,6 +119,9 @@ def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int
             if not o_status:
                 try:
                     obj_path: str | None = create_source_object(storage_path, state_id, file_path, file_path_hash)
+                    if objects is None:
+                        return
+                        
                     print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
                 except Exception as e:
                     print(f"An unexpected error occurred during object creation on file {file_path}: {e}")
@@ -138,6 +142,9 @@ def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int
         if not o_status:
             try:
                 obj_path: str | None = create_source_object(storage_path, state_id, file_path, file_path_hash)
+                if objects is None:
+                    return
+                    
                 print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
             except Exception as e:
                 print(f"An unexpected error occurred during object creation on file {file_path}: {e}")
