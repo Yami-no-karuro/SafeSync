@@ -92,8 +92,21 @@ def scan_directory(conn: Connection, storage_path: str, target_path: str, ignore
     return status
 
 def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int, sources: dict, status: dict, o_status: bool = False):
-    file_path_hash: str = hex(fnv1a(file_path.encode()))[2:]
-    content_hash: str = hex(fnv1a_file(file_path))[2:]
+    if not os.path.exists(file_path):
+        print(f"Unable to create object, file: \"{file_path}\" does not exist.")
+        return
+
+    try:
+        file_path_hash: str = hex(fnv1a(file_path.encode()))[2:]
+    except Exception as e:
+        print(f"An unexpected error occurred during the execution of \"fnv1a\" on path {file_path}: {e}")
+        sys.exit(1)
+
+    try:
+        content_hash: str = hex(fnv1a_file(file_path))[2:]
+    except Exception as e:
+        print(f"An unexpected error occurred during the execution of \"fnv1a_file\" on file {file_path}: {e}")
+        sys.exit(1)
 
     obj_path: str | None = None
     if file_path_hash in sources:
@@ -102,9 +115,13 @@ def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int
         if source["content_hash"] != content_hash:
             status["modified"].append((file_path, file_path_hash))
             if not o_status:
-                obj_path = create_source_object(storage_path, state_id, file_path, file_path_hash)
-                print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
-                
+                try:
+                    obj_path = create_source_object(storage_path, state_id, file_path, file_path_hash)
+                    print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
+                except Exception as e:
+                    print(f"An unexpected error occurred during object creation on file {file_path}: {e}")
+                    sys.exit(1)
+
                 spawn_source(conn, state_id, {
                     "obj_path": obj_path,
                     "path": file_path,
@@ -112,15 +129,19 @@ def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int
                     "content_hash": content_hash,
                     "update_type": 1
                 })
-                
+
         del sources[file_path_hash]
-        
+
     else:
         status["new"].append((file_path, file_path_hash))
         if not o_status:
-            obj_path = create_source_object(storage_path, state_id, file_path, file_path_hash)
-            print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
-            
+            try:
+                obj_path = create_source_object(storage_path, state_id, file_path, file_path_hash)
+                print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
+            except Exception as e:
+                print(f"An unexpected error occurred during object creation on file {file_path}: {e}")
+                sys.exit(1)
+
             spawn_source(conn, state_id, {
                 "obj_path": obj_path,
                 "path": file_path,
