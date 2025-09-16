@@ -100,13 +100,13 @@ def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int
         file_path_hash: str = hex(fnv1a(file_path.encode()))[2:]
     except Exception as e:
         print(f"An unexpected error occurred during the execution of \"fnv1a\" on path {file_path}: {e}")
-        sys.exit(1)
+        return
 
     try:
         content_hash: str = hex(fnv1a_file(file_path))[2:]
     except Exception as e:
         print(f"An unexpected error occurred during the execution of \"fnv1a_file\" on file {file_path}: {e}")
-        sys.exit(1)
+        return
 
     obj_path: str | None = None
     if file_path_hash in sources:
@@ -120,7 +120,7 @@ def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int
                     print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
                 except Exception as e:
                     print(f"An unexpected error occurred during object creation on file {file_path}: {e}")
-                    sys.exit(1)
+                    return
 
                 spawn_source(conn, state_id, {
                     "obj_path": obj_path,
@@ -140,7 +140,7 @@ def snap_file(conn: Connection, file_path: str, storage_path: str, state_id: int
                 print(f"Object file for \"{file_path}\" ({file_path_hash}) successfully created.")
             except Exception as e:
                 print(f"An unexpected error occurred during object creation on file {file_path}: {e}")
-                sys.exit(1)
+                return
 
             spawn_source(conn, state_id, {
                 "obj_path": obj_path,
